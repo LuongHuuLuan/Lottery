@@ -1,0 +1,144 @@
+# DB CONTROL
+CREATE DATABASE CONTROL;
+USE CONTROL;
+CREATE TABLE file_configuration(
+    id int primary key auto_increment,
+    source varchar(50),
+    source_local varchar(50),
+    ftp varchar(50),
+    user varchar(50),
+    pass varchar(50)
+);
+CREATE TABLE file_log(
+    id int primary key AUTO_INCREMENT,
+    id_config int,
+    file_name varchar(50),
+    date datetime,
+    state varchar(10),
+    contact int
+);
+CREATE TABLE contact(
+    id int primary key AUTO_INCREMENT,
+    student_code varchar(10),
+    full_name varchar(50),
+    email varchar(50),
+);
+CREATE TABLE state(
+    state_code varchar(10) primary key,
+    description varchar(255)
+);
+
+
+#insert to config
+insert into file_configuration(source, source_local, ftp, user, pass) values('https://xosodaiphat.com/xsmn-xo-so-mien-nam.html', 'E:\\GocHocTap\\eclipse\\LotteryCrawler\\output', 'ftp://','luan', 'luan');
+
+#insert to contact
+insert into contactor(full_name) values('Script');
+insert into contactor(student_code, full_name, email, phone) values('19130131', 'Luong Huu Luan', '19130131@st.hcmuaf.edu.vn', '0914067629');
+insert into contactor(student_code, full_name, email, phone) values('19130074', 'Nguyen Van Hieu', '19130074@st.hcmuaf.edu.vn', '0192182182');
+insert into contactor(student_code, full_name, email, phone) values('19130210', 'Ho Thach Thao', '19130210@st.hcmuaf.edu.vn', '0192182182');
+
+#END DB CONTROL
+
+#DB STAGING
+CREATE DATABASE STAGING_LOTTERY;
+USE STAGING_LOTTERY;
+CREATE TABLE PROVINCE_DIM(
+    name varchar(50)
+);
+CREATE TABLE SOURCE_DIM(
+    source_name varchar(50),
+    url varchar(255)
+);
+CREATE TABLE DATE_DIM(
+     day int,
+     month int,
+     year int
+);
+CREATE TABLE TIME_DIM(
+     hour int,
+     minute int,
+     second int
+);
+CREATE TABLE RESULT(
+     province varchar(20),
+     date varchar(50),
+     prize_8 varchar(2),
+     prize_7 varchar(3),
+     prize_6 varchar(20),
+     prize_5 varchar(4),
+     prize_4 varchar(50),
+     prize_3 varchar(12),
+     prize_2 varchar(5),
+     prize_1 varchar(5),
+     prize_DB varchar(6),
+     CONSTRAINT PK_RESULT PRIMARY KEY (tinh, ngay)
+);
+#END DB STAGING
+
+#DB DW
+CREATE DATABASE DW_LOTTERY;
+USE DW_LOTTERY;
+CREATE TABLE PROVINCE_DIM(
+    id int primary key AUTO_INCREMENT,
+    name varchar(50)
+);
+CREATE TABLE SOURCE_DIM(
+    id int primary key AUTO_INCREMENT,
+    source_name varchar(50),
+    url varchar(255)
+);
+CREATE TABLE DATE_DIM(
+     id int primary key AUTO_INCREMENT,
+     day int,
+     month int,
+     year int
+);
+CREATE TABLE TIME_DIM(
+     id int primary key AUTO_INCREMENT,
+     hour int,
+     minute int,
+     second int
+);
+CREATE TABLE RESULT(
+    id int primary key AUTO_INCREMENT,
+    province varchar(20),
+    date varchar(50),
+    prize_8 varchar(2),
+    prize_7 varchar(3),
+    prize_6 varchar(20),
+    prize_5 varchar(4),
+    prize_4 varchar(50),
+    prize_3 varchar(12),
+    prize_2 varchar(5),
+    prize_1 varchar(5),
+    prize_DB varchar(6),
+    
+);
+
+#insert to province
+insert into province_dim(name) values('Kiên Giang');
+insert into province_dim(name) values('Tiền Giang');
+insert into province_dim(name) values('Đà Lạt');
+insert into province_dim(name) values('TPHCM');
+insert into province_dim(name) values('Đồng Tháp');
+insert into province_dim(name) values('Cà Mau');
+insert into province_dim(name) values('Vũng Tàu');
+insert into province_dim(name) values('Bến Tre');
+insert into province_dim(name) values('Bạc Liêu');
+insert into province_dim(name) values('Sóc Trăng');
+insert into province_dim(name) values('Cần Thơ');
+insert into province_dim(name) values('An Giang');
+insert into province_dim(name) values('Bình Thuận');
+insert into province_dim(name) values('Đồng Nai');
+insert into province_dim(name) values('Bình Dương');
+insert into province_dim(name) values('Tây Ninh');
+insert into province_dim(name) values('Vĩnh Long');
+insert into province_dim(name) values('Long An');
+insert into province_dim(name) values('Trà Vinh');
+insert into province_dim(name) values('Bình Phước');
+insert into province_dim(name) values('Hậu Giang');
+
+#delete
+DROP DATABASE STAGING_LOTTERY;
+DROP DATABASE DW_LOTTERY;
