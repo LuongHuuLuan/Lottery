@@ -1,4 +1,4 @@
-package load_staging;
+package staging;
 
 import java.util.List;
 

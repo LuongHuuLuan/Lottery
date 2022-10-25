@@ -1,4 +1,4 @@
-package crawler;
+package extract;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -18,7 +18,7 @@ import model.FileLog;
 import model.MyDate;
 import model.Result;
 
-public class Crawler {
+public class ExtractXSDP {
 	// crawling xosodaiphat
 	public String crawling(String url) throws IOException {
 		List<String> provinces = new ArrayList<String>();
@@ -94,7 +94,7 @@ public class Crawler {
 			String fileName = "lottery-result_" + today.toDateString() + "_"
 					+ src.substring(src.indexOf("//") + 2, src.indexOf(".")) + ".csv";
 			saveCSV(data, config.getSourceLocal() + "/" + fileName);
-			
+
 			FileLog fileLog = new FileLog();
 			fileLog.setIdConfig(1);
 			fileLog.setFileName(fileName);
@@ -140,17 +140,15 @@ public class Crawler {
 			crawl(date);
 		}
 	}
-	
 
 	public static void main(String[] args) {
-		MyDate start = new MyDate(10, 9, 2022);
-		MyDate end = new MyDate(11, 10, 2022);
-//		MyDate yesterday = new MyDate(20, 9, 2022);
-		Crawler c = new Crawler();
-//		c.crawlToday();
-//		c.crawl(yesterday);
-		c.crawl(start, end);
+//		MyDate start = new MyDate(10, 9, 2022);
+//		MyDate end = new MyDate(11, 10, 2022);
+////		MyDate yesterday = new MyDate(20, 9, 2022);
+		ExtractXSDP c = new ExtractXSDP();
+		c.crawlToday();
+////		c.crawl(yesterday);
+//		c.crawl(start, end);
 		System.out.println("done");
-
 	}
 }
