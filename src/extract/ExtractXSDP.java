@@ -7,6 +7,10 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -50,7 +54,7 @@ public class ExtractXSDP {
 				results.add(e.text());
 			});
 			return new Result(day, fullDate, provinces, results).toString();
-		} catch (Exception e2) {
+		} catch (Exception e) {
 			return "";
 		}
 	}
@@ -82,26 +86,41 @@ public class ExtractXSDP {
 	}
 
 	public void crawlToday() {
-		// ten file
-//		lottery-result_20-09-2020_xosodaiphat.csv
 		try {
-			Config config = ConfigDAO.getConfig(1);
-			String src = config.getSource();
-			MyDate today = new MyDate();
-			String url = src.substring(0, src.indexOf("-")) + "-" + today.toDateString() + ".html";
-			String data = crawling(url);
-			System.out.println(data);
-			String fileName = "lottery-result_" + today.toDateString() + "_"
-					+ src.substring(src.indexOf("//") + 2, src.indexOf(".")) + ".csv";
-			saveCSV(data, config.getSourceLocal() + "/" + fileName);
+//			connect db control
+//			get 1 row data has date = today and status = ER or ES  from table file_log
+			if (LogDAO.getLastRowExtract() == null) {
+// 				no data
+//				get 1 row data from table file_configuration
+				Config config = ConfigDAO.getConfig(1);
+				String src = config.getSource();
+				MyDate today = new MyDate();
+				String url = src.substring(0, src.indexOf("-")) + "-" + today.toDateString() + ".html";
+				String fileName = "lottery-result_" + today.toDateString() + "_"
+						+ src.substring(src.indexOf("//") + 2, src.indexOf(".")) + ".csv";
+//				insert 1 row to table file_log(status ES)
+				FileLog fileLog = new FileLog();
+				fileLog.setIdConfig(1);
+				fileLog.setFileName(fileName);
+				fileLog.setDate(today.toTimeStamp());
+				fileLog.setState("ES");
+				fileLog.setContact(1);
+				LogDAO.saveLog(fileLog);
 
-			FileLog fileLog = new FileLog();
-			fileLog.setIdConfig(1);
-			fileLog.setFileName(fileName);
-			fileLog.setDate(today.toTimeStamp());
-			fileLog.setState("EXTRACT");
-			fileLog.setContact(1);
-			LogDAO.saveLog(fileLog);
+//				get data from source
+				String data = crawling(url);
+				if (data.trim().length() != 0) {
+//					has data
+//					save data format csv to ftp server and local
+					saveCSV(data, config.getSourceLocal() + "/" + fileName);
+//					get last row from table file_log has status ES and update status ER
+					LogDAO.updateStateLastRow("ES", "ER");
+				} else {
+//					no data
+					LogDAO.updateStateLastRow("ES", "EF");
+				}
+			}
+			// no data: end
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -109,25 +128,43 @@ public class ExtractXSDP {
 
 	public void crawl(MyDate date) {
 		try {
-			Config config = ConfigDAO.getConfig(1);
-			String src = config.getSource();
-			String url = src.substring(0, src.indexOf("-")) + "-" + date.toDateString() + ".html";
-			String data = crawling(url);
-			System.out.println(data);
-			String fileName = "lottery-result_" + date.toDateString() + "_"
-					+ src.substring(src.indexOf("//") + 2, src.indexOf(".")) + ".csv";
-			saveCSV(data, config.getSourceLocal() + "/" + fileName);
+//			connect db control
+//			get 1 row data has date = today and status = ER or ES  from table file_log
+//			get 1 row data from table file_configuration
+			if (LogDAO.getLastRowExtract() == null) {
+				// has data
+				Config config = ConfigDAO.getConfig(1);
+				String src = config.getSource();
+				String url = src.substring(0, src.indexOf("-")) + "-" + date.toDateString() + ".html";
+				String fileName = "lottery-result_" + date.toDateString() + "_"
+						+ src.substring(src.indexOf("//") + 2, src.indexOf(".")) + ".csv";
 
-			FileLog fileLog = new FileLog();
-			fileLog.setIdConfig(1);
-			fileLog.setFileName(fileName);
-			date.setTime(17);
-			date.setMinute(50);
-			date.setSecond(0);
-			fileLog.setDate(date.toTimeStamp());
-			fileLog.setState("EXTRACT");
-			fileLog.setContact(1);
-			LogDAO.saveLog(fileLog);
+//				insert 1 row to table file_log(status ES)
+				FileLog fileLog = new FileLog();
+				fileLog.setIdConfig(1);
+				fileLog.setFileName(fileName);
+				date.setTime(17);
+				date.setMinute(50);
+				date.setSecond(0);
+				fileLog.setDate(date.toTimeStamp());
+				fileLog.setState("ES");
+				fileLog.setContact(1);
+				LogDAO.saveLog(fileLog);
+
+//				get data from source
+				String data = crawling(url);
+				if (data.trim().length() != 0) {
+//					has data
+//					save data format csv to ftp server and local
+					saveCSV(data, config.getSourceLocal() + "/" + fileName);
+//					get last row from table file_log has status ES and update status ER
+					LogDAO.updateStateLastRow("ES", "ER");
+				} else {
+//					no data
+					LogDAO.updateStateLastRow("ES", "EF");
+				}
+			}
+			// no data: end
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -143,12 +180,20 @@ public class ExtractXSDP {
 
 	public static void main(String[] args) {
 //		MyDate start = new MyDate(10, 9, 2022);
-//		MyDate end = new MyDate(11, 10, 2022);
-////		MyDate yesterday = new MyDate(20, 9, 2022);
+//		MyDate end = new MyDate(25, 10, 2022);
+//		MyDate yesterday = new MyDate(25, 10, 2022);
 		ExtractXSDP c = new ExtractXSDP();
 		c.crawlToday();
-////		c.crawl(yesterday);
+//		c.crawl(yesterday);
 //		c.crawl(start, end);
-		System.out.println("done");
+		JFrame notify = new JFrame();
+		notify.setTitle("Notify");
+		JLabel fn = new JLabel("Finish");
+		fn.setHorizontalAlignment(SwingConstants.CENTER);
+		notify.add(fn);
+		notify.setVisible(true);
+		notify.setSize(300, 100);
+		notify.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		notify.setLocationRelativeTo(null);
 	}
 }

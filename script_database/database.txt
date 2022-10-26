@@ -21,7 +21,7 @@ CREATE TABLE contact(
     id int primary key auto_increment,
     student_code varchar(10),
     full_name varchar(50),
-    email varchar(50),
+    email varchar(50)
 );
 
 
@@ -29,9 +29,9 @@ CREATE TABLE contact(
 insert into file_configuration(source, source_local, ftp, user, pass) values('https://xosodaiphat.com/xsmn-xo-so-mien-nam.html', 'E:\\GocHocTap\\eclipse\\LotteryCrawler\\output', 'ftp://','luan', 'luan');
 
 #insert to contact
-insert into contactor(student_code, full_name, email) values('19130131', 'Luong Huu Luan', '19130131@st.hcmuaf.edu.vn');
-insert into contactor(student_code, full_name, email) values('19130074', 'Nguyen Van Hieu', '19130074@st.hcmuaf.edu.vn');
-insert into contactor(student_code, full_name, email) values('19130210', 'Ho Thach Thao', '19130210@st.hcmuaf.edu.vn');
+insert into contact(student_code, full_name, email) values('19130131', 'Luong Huu Luan', '19130131@st.hcmuaf.edu.vn');
+insert into contact(student_code, full_name, email) values('19130074', 'Nguyen Van Hieu', '19130074@st.hcmuaf.edu.vn');
+insert into contact(student_code, full_name, email) values('19130210', 'Ho Thach Thao', '19130210@st.hcmuaf.edu.vn');
 
 #END DB CONTROL
 
@@ -70,7 +70,7 @@ CREATE TABLE LOTTERY(
 CREATE TABLE RESULT(
      id_lot varchar(100),
      id_pri int,
-     result varchar(255),
+     result varchar(255)
 );
 
 #END DB STAGING
@@ -81,7 +81,7 @@ USE DW_LOTTERY;
 
 CREATE TABLE SOURCE_DIM(
     id_sour int primary key auto_increment,
-    name varchar(50)
+    name varchar(50),
     url varchar(255)
 );
 CREATE TABLE DATE_DIM(
@@ -103,13 +103,13 @@ CREATE TABLE PRIZE_DIM(
 );
 CREATE TABLE LOTTERY(
      id_lot int primary key auto_increment,
-     nk_id_lot varchar(100) primary key,
+     nk_id_lot varchar(100),
      id_date int,
      id_sour int,
      id_pro int,
      is_delete varchar(5),
      update_date date,
-     expried_date date,
+     expried_date date
 );
 CREATE TABLE RESULT(
      id_lot varchar(100),
@@ -117,7 +117,7 @@ CREATE TABLE RESULT(
      result varchar(255),
      is_delete varchar(5),
      update_date date,
-     expried_date date,
+     expried_date date
 );
 
 # END DB DW
@@ -144,7 +144,3 @@ insert into province_dim(name) values('Long An');
 insert into province_dim(name) values('Trà Vinh');
 insert into province_dim(name) values('Bình Phước');
 insert into province_dim(name) values('Hậu Giang');
-
-#delete
-DROP DATABASE STAGING_LOTTERY;
-DROP DATABASE DW_LOTTERY;
