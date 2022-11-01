@@ -7,9 +7,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
+import javax.swing.JOptionPane;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -89,7 +87,7 @@ public class ExtractXSDP {
 		try {
 //			connect db control
 //			get 1 row data has date = today and status = ER or ES  from table file_log
-			if (LogDAO.getLastRowExtract() == null) {
+			if (LogDAO.getLastRowExtract(true) == null) {
 // 				no data
 //				get 1 row data from table file_configuration
 				Config config = ConfigDAO.getConfig(1);
@@ -131,7 +129,7 @@ public class ExtractXSDP {
 //			connect db control
 //			get 1 row data has date = today and status = ER or ES  from table file_log
 //			get 1 row data from table file_configuration
-			if (LogDAO.getLastRowExtract() == null) {
+			if (LogDAO.getLastRowExtract(true) == null) {
 				// has data
 				Config config = ConfigDAO.getConfig(1);
 				String src = config.getSource();
@@ -186,14 +184,7 @@ public class ExtractXSDP {
 		c.crawlToday();
 //		c.crawl(yesterday);
 //		c.crawl(start, end);
-		JFrame notify = new JFrame();
-		notify.setTitle("Notify");
-		JLabel fn = new JLabel("Finish");
-		fn.setHorizontalAlignment(SwingConstants.CENTER);
-		notify.add(fn);
-		notify.setVisible(true);
-		notify.setSize(300, 100);
-		notify.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		notify.setLocationRelativeTo(null);
+
+		JOptionPane.showMessageDialog(null, "Finish");
 	}
 }

@@ -31,35 +31,16 @@ public class LogDAO {
 		return false;
 	}
 
-	public static List<FileLog> getListFilesExtract() {
-		List<FileLog> results = new ArrayList<FileLog>();
-		try {
-			Connection connect = Connect.getInstance().getConnection();
-			String sql = "SELECT * FROM FILE_LOG WHERE STATE = ?";
-			PreparedStatement ps = connect.prepareStatement(sql);
-			ps.setString(1, "EXTRACT");
-			ResultSet resultSet = ps.executeQuery();
-			while (resultSet.next()) {
-				int id = resultSet.getInt(1);
-				int idConfig = resultSet.getInt(2);
-				String fileName = resultSet.getString(3);
-				Timestamp date = resultSet.getTimestamp(4);
-				String state = resultSet.getString(5);
-				int contact = resultSet.getInt(6);
-				FileLog log = new FileLog(id, idConfig, fileName, date, state, contact);
-				results.add(log);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return results;
-	}
-
-	public static FileLog getLastRowExtract() {
+	public static FileLog getLastRowExtract(boolean getExtractStart) {
 		FileLog log = null;
 		try {
 			Connection connect = Connect.getInstance().getConnection();
-			String sql = "SELECT id, id_config, file_name, date, state, contact FROM file_log WHERE day(date) = day(now()) and month(date) = month(now()) and year(date) = year(now()) and (state = 'ES' or state = 'ER')";
+			String sql = "SELECT id, id_config, file_name, date, state, contact FROM file_log WHERE day(date) = day(now()) and month(date) = month(now()) and year(date) = year(now()) and ";
+			if (getExtractStart) {
+				sql += "(state = 'ES' or state = 'ER')";
+			} else {
+				sql+="state = 'ER'";
+			}
 			PreparedStatement ps = connect.prepareStatement(sql);
 			ResultSet resultSet = ps.executeQuery();
 			while (resultSet.next()) {

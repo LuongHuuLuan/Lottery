@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 
 import model.DatabaseConfig;
 
-public class getConfig {
+public class GetConfig {
 	// read all content configs file
 	public static String readConfigsFile() {
 		String fileContent = "";

@@ -1,3 +1,4 @@
+
 package connection;
 
 import java.sql.Connection;
@@ -5,16 +6,17 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import configs.GetConfig;
+import configs.GetConfigStaging;
 import model.DatabaseConfig;
 
-public class Connect {
-	private static Connect instance;
+public class ConnectDBStaging {
+	private static ConnectDBStaging instance;
 	private static Connection connection;
 
-	private Connect() {
+	private ConnectDBStaging() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			DatabaseConfig databaseConfig = GetConfig.getDatabaseConfigs();
+			DatabaseConfig databaseConfig = GetConfigStaging.getDatabaseConfigs();
 			String url = "jdbc:mysql://" + databaseConfig.getHost() + ":" + databaseConfig.getPort() + "/"
 					+ databaseConfig.getDatabaseName();
 			String username = databaseConfig.getUserName();
@@ -25,9 +27,9 @@ public class Connect {
 		}
 	}
 
-	public static Connect getInstance() {
+	public static ConnectDBStaging getInstance() {
 		if (instance == null)
-			instance = new Connect();
+			instance = new ConnectDBStaging();
 		return instance;
 	}
 
