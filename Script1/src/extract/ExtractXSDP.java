@@ -56,6 +56,49 @@ public class ExtractXSDP {
 		}
 	}
 
+// crawling xoso.me
+	public String crawling_xoso_me(String url) throws IOException {
+		// url = "https://xoso.me/xsmn-sxmn-kqxsmn-ket-qua-xo-so-mien-nam.html"
+		List<String> provinces = new ArrayList<String>();
+		List<String> results = new ArrayList<String>();
+		Document doc = Jsoup.connect(url).data("query", "Java").userAgent("Chrome").cookie("auth", "token").get();
+		try {
+			// get day of lottery
+			Elements elemantsDay = doc.getElementsByClass(" opt_date_full clearfix").first().select("strong").get(0)
+					.getAllElements();
+			String day = elemantsDay.text();
+			// get date of lottery
+			Elements elementsFullDate = doc.getElementsByClass("tit-mien clearfix").first().select("h2").get(0)
+					.getAllElements();
+			String fullDate = elementsFullDate.text().substring(elementsFullDate.text().length() - 10,
+					elementsFullDate.text().length());
+			// get province of lottery
+			Elements provinceElements = doc.getElementsByClass("gr-yellow").first().children()
+					.select("th:not(:first-child)");
+			provinceElements.forEach(e -> {
+				provinces.add(e.text());
+			});
+			// check how many provinces?
+			Elements contentElements;
+			if (provinces.size() == 3) {
+				contentElements = doc.getElementsByClass("colthreecity colgiai extendable").select("tbody").get(0)
+						.children();
+			} else {
+				contentElements = doc.getElementsByClass("colfourcity colgiai extendable").select("tbody").get(0)
+						.children();
+			}
+			// get result of lottery
+			Elements resultElements = contentElements.select("tr td:not(:first-child)");
+			resultElements.forEach(e -> {
+				results.add(e.text());
+			});
+			return new Result(day, fullDate, provinces, results).toString();
+
+		} catch (Exception e) {
+			return "";
+		}
+	}
+
 	public boolean saveCSV(String content, String dest) throws IOException {
 		if (content.length() != 0) {
 			FileWriter fw = new FileWriter(dest, true);
@@ -97,7 +140,7 @@ public class ExtractXSDP {
 				fileLog.setFileName(fileName);
 				fileLog.setDate(today.toTimeStamp());
 				fileLog.setState("ES");
-				fileLog.setContact(1);
+				fileLog.setContact(2);
 				LogDAO.saveLog(fileLog);
 
 //				get data from source
