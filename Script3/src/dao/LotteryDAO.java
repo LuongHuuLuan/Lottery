@@ -3,10 +3,13 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import connection.ConnectStaging;
+import model.DateLottery;
 import model.Lottery;
+import model.Source;
 
 public class LotteryDAO {
 	public static void main(String[] args) {
@@ -30,4 +33,5 @@ public class LotteryDAO {
 		}
 		return result;
 	}
+
 }
