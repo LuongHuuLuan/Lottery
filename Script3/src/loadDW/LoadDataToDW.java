@@ -3,13 +3,13 @@ package loadDW;
 import java.util.ArrayList;
 import java.util.List;
 
-import dao.ConfigDAO;
+import dao.DateDAO;
 import dao.LogDAO;
 import dao.LotteryDAO;
 import dao.PrizeDAO;
 import dao.ProvinceDAO;
 import dao.SourceDao;
-import model.Config;
+import model.DateLottery;
 import model.FileLog;
 import model.Lottery;
 import model.Prize;
@@ -55,6 +55,26 @@ public class LoadDataToDW {
 		}
 	}
 
+	public void loadDateDate() {
+		try {
+			ArrayList<Lottery> lotteries = LotteryDAO.getAllLotteryInStaging();
+			for (Lottery lottery : lotteries) {
+				int idDate = lottery.getIdDate();
+				DateLottery dateLottery = DateDAO.getDateInStaging(idDate);
+				DateLottery checkDate = DateDAO.getDateInDataWH(dateLottery.getDate(), dateLottery.getMonth(),
+						dateLottery.getYear());
+				System.out.println(checkDate.toString());
+				if (checkDate.getDate() != dateLottery.getDate() || checkDate.getMonth() != dateLottery.getMonth()
+						|| checkDate.getYear() != dateLottery.getYear()) {
+					DateDAO.addDateToDaWH(dateLottery.getFullDate(), dateLottery.getDay(), dateLottery.getDate(),
+							dateLottery.getMonth(), dateLottery.getYear());
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void loadDataPrize() {
 		try {
 			ArrayList<Prize> prizesInStaging = PrizeDAO.getAllPrizeInStaging();
@@ -93,6 +113,7 @@ public class LoadDataToDW {
 		LoadDataToDW load = new LoadDataToDW();
 //		load.loadDataProvince();
 //		load.loadDataSource();
-		load.loadDataPrize();
+//		load.loadDataPrize();
+//		load.loadDateDate();
 	}
 }
