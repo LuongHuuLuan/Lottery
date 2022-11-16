@@ -1,5 +1,6 @@
 package loadDW;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,12 +9,15 @@ import dao.LogDAO;
 import dao.LotteryDAO;
 import dao.PrizeDAO;
 import dao.ProvinceDAO;
+import dao.ResultDAO;
 import dao.SourceDao;
 import model.DateLottery;
 import model.FileLog;
 import model.Lottery;
+import model.MyDate;
 import model.Prize;
 import model.Province;
+import model.Result;
 import model.Source;
 
 public class LoadDataToDW {
@@ -63,7 +67,6 @@ public class LoadDataToDW {
 				DateLottery dateLottery = DateDAO.getDateInStaging(idDate);
 				DateLottery checkDate = DateDAO.getDateInDataWH(dateLottery.getDate(), dateLottery.getMonth(),
 						dateLottery.getYear());
-				System.out.println(checkDate.toString());
 				if (checkDate.getDate() != dateLottery.getDate() || checkDate.getMonth() != dateLottery.getMonth()
 						|| checkDate.getYear() != dateLottery.getYear()) {
 					DateDAO.addDateToDaWH(dateLottery.getFullDate(), dateLottery.getDay(), dateLottery.getDate(),
@@ -98,6 +101,110 @@ public class LoadDataToDW {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
+	public void loadDataResult() {
+		try {
+			ArrayList<Result> resultStagings = ResultDAO.getAllResultInStaging();
+			int idLotDW = 0, idPriWH = 0, idDateWH = 0, idSourWH = 0, idProWH = 0;
+			MyDate myDate = new MyDate();
+			String resultLottery = "";
+			for (Result result : resultStagings) {
+				resultLottery = result.getResult();
+				String namePri = PrizeDAO.getPrizeInStaging(result.getIdPri()).getNamePri();
+				int idLotSG = result.getIdLot();
+				ArrayList<Lottery> lotterieStaging = LotteryDAO.getAllLotteryInStaging();
+				for (Lottery l : lotterieStaging) {
+					if (idLotSG == l.getIdLot()) {
+						String namePro = ProvinceDAO.getProvinceInStaging(l.getIdPro()).getName();
+						String urlSour = SourceDao.getSourceInStaging(l.getIdSour()).getUrl();
+						int date = DateDAO.getDateInStaging(l.getIdDate()).getDate();
+						int month = DateDAO.getDateInStaging(l.getIdDate()).getMonth();
+						int year = DateDAO.getDateInStaging(l.getIdDate()).getYear();
+						ArrayList<DateLottery> dateWHs = DateDAO.getAllSourceInDW();
+						for (DateLottery d : dateWHs) {
+							if (d.getDate() == date && d.getMonth() == month && d.getYear() == year) {
+								idDateWH = d.getIdDate();
+							}
+						}
+						ArrayList<Source> sourceWHs = SourceDao.getAllSourceInDW();
+						for (Source s : sourceWHs) {
+							if (s.getUrl().equalsIgnoreCase(urlSour)) {
+								idSourWH = s.getIdSour();
+							}
+						}
+						ArrayList<Province> provinceWHs = ProvinceDAO.getAllProvinceInDW();
+						for (Province p : provinceWHs) {
+							if (p.getName().equalsIgnoreCase(namePro)) {
+								idProWH = p.getIdPro();
+							}
+						}
+						idLotDW = LotteryDAO.getLotteryInDataWH(idLotSG + "", idDateWH, idSourWH, idProWH);
+					}
+				}
+				ArrayList<Prize> prizeWHs = PrizeDAO.getAllPrizeInDataWH();
+				for (Prize p : prizeWHs) {
+					if (p.getNamePri().equalsIgnoreCase(namePri)) {
+						idPriWH = p.getIdPri();
+					}
+				}
+
+				Result resultCheck = ResultDAO.getResultInDataWH(idLotDW, idPriWH, resultLottery);
+				if (resultCheck.getIdLot() != idLotDW || resultCheck.getIdPri() != idPriWH
+						|| !resultCheck.getResult().equals(resultLottery)) {
+					ResultDAO.addResultInDataWH(idLotDW, idPriWH, resultLottery, "false",
+							new Date(myDate.getYear(), myDate.getMonth(), myDate.getDay()), new Date(3000, 12, 31));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	public void loadDataLottery() {
+		try {
+			ArrayList<Lottery> lotterieStagings = LotteryDAO.getAllLotteryInStaging();
+			MyDate myDate = new MyDate();
+			int idDateWH = 0, idSourWH = 0, idProWH = 0;
+			String nkIdLotWH = "";
+			for (Lottery lottery : lotterieStagings) {
+				nkIdLotWH = lottery.getIdLot() + "";
+				String namePro = ProvinceDAO.getProvinceInStaging(lottery.getIdPro()).getName();
+				String urlSour = SourceDao.getSourceInStaging(lottery.getIdSour()).getUrl();
+				int date = DateDAO.getDateInStaging(lottery.getIdDate()).getDate();
+				int month = DateDAO.getDateInStaging(lottery.getIdDate()).getMonth();
+				int year = DateDAO.getDateInStaging(lottery.getIdDate()).getYear();
+				ArrayList<DateLottery> dateWHs = DateDAO.getAllSourceInDW();
+				for (DateLottery d : dateWHs) {
+					if (d.getDate() == date && d.getMonth() == month && d.getYear() == year) {
+						idDateWH = d.getIdDate();
+					}
+				}
+				ArrayList<Source> sourceWHs = SourceDao.getAllSourceInDW();
+				for (Source s : sourceWHs) {
+					if (s.getUrl().equalsIgnoreCase(urlSour)) {
+						idSourWH = s.getIdSour();
+					}
+				}
+				ArrayList<Province> provinceWHs = ProvinceDAO.getAllProvinceInDW();
+				for (Province p : provinceWHs) {
+					if (p.getName().equalsIgnoreCase(namePro)) {
+						idProWH = p.getIdPro();
+					}
+				}
+				Lottery lotteryCheck = LotteryDAO.getLotteryInDataWH(idDateWH, idSourWH, idProWH);
+				System.out.println(lotteryCheck.getIdDate()+" "+idDateWH);
+				if (lotteryCheck.getIdDate() != idDateWH || lotteryCheck.getIdSour() != idSourWH
+						|| lotteryCheck.getIdPro() != idProWH) {
+					LotteryDAO.addLotteryToDaWH(nkIdLotWH, idDateWH, idSourWH, idProWH, "false",
+							new Date(myDate.getYear(), myDate.getMonth(), myDate.getDay()), new Date(3000, 12, 31));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void loadData() {
 		// connect db control
 		// get all row data has date = today and status = SR from table file_log
@@ -115,5 +222,7 @@ public class LoadDataToDW {
 //		load.loadDataSource();
 //		load.loadDataPrize();
 //		load.loadDateDate();
+		load.loadDataLottery();
+//		load.loadDataResult();
 	}
 }

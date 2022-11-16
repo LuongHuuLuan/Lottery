@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import connection.ConnectDW;
 import connection.ConnectStaging;
@@ -70,6 +71,24 @@ public class DateDAO {
 		}
 
 		return new DateLottery(0, "", "", 0, 0, 0);
+	}
+
+	// get all row in table date_dim of DataWH
+	public static ArrayList<DateLottery> getAllSourceInDW() {
+		ArrayList<DateLottery> result = new ArrayList<DateLottery>();
+		try {
+			Connection connect = ConnectDW.getInstance().getConnection();
+			String sql = "select * from date_dim";
+			PreparedStatement preparedStatement = connect.prepareStatement(sql);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				result.add(new DateLottery(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),
+						resultSet.getInt(4), resultSet.getInt(5), resultSet.getInt(6)));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 }

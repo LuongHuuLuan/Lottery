@@ -67,4 +67,21 @@ public class SourceDao {
 		return null;
 	}
 
+	// get all row in table source of DataWH
+	public static ArrayList<Source> getAllSourceInDW() {
+		ArrayList<Source> result = new ArrayList<Source>();
+		try {
+			Connection connect = ConnectDW.getInstance().getConnection();
+			String sql = "select * from source_dim";
+			PreparedStatement preparedStatement = connect.prepareStatement(sql);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				result.add(new Source(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3)));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
 }
