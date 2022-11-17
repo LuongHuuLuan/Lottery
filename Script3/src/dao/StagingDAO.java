@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
@@ -18,8 +19,8 @@ public class StagingDAO {
 	}
 
 	// read all content configs file
-	public static String readTruncateStaging() {
-		String fileTruncate = "";
+	public static ArrayList<String> readTruncateStaging() {
+		ArrayList<String> result = new ArrayList<String>();
 		String currentPath = Paths.get("").toAbsolutePath().toString();
 		File truncateFile = new File(currentPath + "\\truncateStaging.txt");
 
@@ -28,22 +29,26 @@ public class StagingDAO {
 				BufferedReader buff = new BufferedReader(new FileReader(truncateFile));
 				String line = "";
 				while ((line = buff.readLine()) != null) {
-					fileTruncate += line;
+					result.add(line);
 				}
 				buff.close();
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(null, "File not exist or can't read file");
 			}
 		}
-		return fileTruncate;
+		return result;
 	}
+
 //truncate Database Staging
 	public static void deleteDateStaging() {
 		try {
 			Connection connect = ConnectStaging.getInstance().getConnection();
-			String sql = readTruncateStaging();
-			PreparedStatement preparedStatement = connect.prepareStatement(sql);
-			preparedStatement.execute();
+			ArrayList<String> sqls = readTruncateStaging();
+			for (String s : sqls) {
+				String sql = s;
+				PreparedStatement preparedStatement = connect.prepareStatement(sql);
+				preparedStatement.execute();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
