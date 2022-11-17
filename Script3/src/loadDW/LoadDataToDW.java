@@ -1,9 +1,11 @@
 package loadDW;
 
+import java.sql.Connection;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import connection.ConnectStaging;
 import dao.DateDAO;
 import dao.LogDAO;
 import dao.LotteryDAO;
@@ -11,6 +13,7 @@ import dao.PrizeDAO;
 import dao.ProvinceDAO;
 import dao.ResultDAO;
 import dao.SourceDao;
+import dao.StagingDAO;
 import model.DateLottery;
 import model.FileLog;
 import model.Lottery;
@@ -193,13 +196,21 @@ public class LoadDataToDW {
 					}
 				}
 				Lottery lotteryCheck = LotteryDAO.getLotteryInDataWH(idDateWH, idSourWH, idProWH);
-				System.out.println(lotteryCheck.getIdDate()+" "+idDateWH);
+				System.out.println(lotteryCheck.getIdDate() + " " + idDateWH);
 				if (lotteryCheck.getIdDate() != idDateWH || lotteryCheck.getIdSour() != idSourWH
 						|| lotteryCheck.getIdPro() != idProWH) {
 					LotteryDAO.addLotteryToDaWH(nkIdLotWH, idDateWH, idSourWH, idProWH, "false",
 							new Date(myDate.getYear(), myDate.getMonth(), myDate.getDay()), new Date(3000, 12, 31));
 				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void deleteDateStaging() {
+		try {
+			Connection connect = ConnectStaging.getInstance().getConnection();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -213,16 +224,20 @@ public class LoadDataToDW {
 		if (logs.size() != 0) {
 			// connect db staging and db warehouse
 			// transform data
+			loadDataProvince();
+			loadDataSource();
+			loadDataPrize();
+			loadDateDate();
+			loadDataLottery();
+			loadDataResult();
+			StagingDAO.deleteDateStaging();
+			LogDAO.updateStatus();
+
 		}
 	}
 
 	public static void main(String[] args) {
 		LoadDataToDW load = new LoadDataToDW();
-//		load.loadDataProvince();
-//		load.loadDataSource();
-//		load.loadDataPrize();
-//		load.loadDateDate();
-		load.loadDataLottery();
-//		load.loadDataResult();
+		load.loadData();
 	}
 }

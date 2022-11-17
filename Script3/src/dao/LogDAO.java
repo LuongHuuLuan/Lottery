@@ -11,6 +11,9 @@ import connection.ConnectControl;
 import model.FileLog;
 
 public class LogDAO {
+	public static void main(String[] args) {
+		LogDAO.updateStatus();
+	}
 
 	public static List<FileLog> getAllExtract() {
 		List<FileLog> logs = new ArrayList<FileLog>();
@@ -34,6 +37,18 @@ public class LogDAO {
 			e.printStackTrace();
 		}
 		return logs;
+	}
+
+	// update table file_log SR==>>TR
+	public static void updateStatus() {
+		try {
+			Connection connect = ConnectControl.getInstance().getConnection();
+			String sql = "update file_log set state = 'TR' where state = 'SR'";
+			PreparedStatement preparedStatement = connect.prepareStatement(sql);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }
