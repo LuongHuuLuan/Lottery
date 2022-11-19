@@ -98,6 +98,47 @@ public class ExtractXSDP {
 			return "";
 		}
 	}
+// crawling xsmn.me
+	public String crawling_xsmn_me(String url) throws IOException {
+		List<String> provinces = new ArrayList<String>();
+		List<String> results = new ArrayList<String>();
+		Document doc = Jsoup.connect(url).data("query", "Java").userAgent("Chrome").cookie("auth", "token")
+				.referrer("http://www.google.com").ignoreHttpErrors(true).get();
+		try {
+			// get day of lottery
+			Elements elemantsDay = doc.getElementsByClass("title-bor clearfix").first().select("a").get(1)
+					.getAllElements();
+			String day = elemantsDay.text().substring(5, elemantsDay.text().length());
+			// get date of lottery
+			Elements elementsFullDate = doc.getElementsByClass("title-bor clearfix").first().select("a").get(2)
+					.getAllElements();
+			String fullDate = elementsFullDate.text().substring(15, elementsFullDate.text().length());
+			// get province of lottery
+			Elements provinceElements = doc.getElementsByClass("gr-yellow").first().children()
+					.select("th:not(:first-child)");
+			provinceElements.forEach(e -> {
+				provinces.add(e.text());
+			});
+			// check how many provinces?
+			Elements contentElements;
+			if (provinces.size() == 3) {
+				contentElements = doc.getElementsByClass("extendable colthreecity colgiai").select("tbody").get(0)
+						.children();
+			} else {
+				contentElements = doc.getElementsByClass("extendable colfourcity colgiai").select("tbody").get(0)
+						.children();
+			}
+			// get result of lottery
+			Elements resultElements = contentElements.select("tr td:not(:first-child)");
+			resultElements.forEach(e -> {
+				results.add(e.text());
+			});
+			return new Result(day, fullDate, provinces, results).toString();
+		} catch (Exception e) {
+			return "";
+		}
+
+	}
 
 	public boolean saveCSV(String content, String dest) throws IOException {
 		if (content.length() != 0) {
