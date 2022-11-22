@@ -6,8 +6,8 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="E:/GocHocTap/eclipse/LotteryCrawler/Script1/libs/gson-2.8.2.jar"/>
-	<classpathentry kind="lib" path="E:/GocHocTap/eclipse/LotteryCrawler/Script1/libs/jsoup-1.15.3.jar"/>
-	<classpathentry kind="lib" path="E:/GocHocTap/eclipse/LotteryCrawler/Script1/libs/mysql-connector-java-8.0.30.jar"/>
+	<classpathentry kind="lib" path="libs/gson-2.8.2.jar"/>
+	<classpathentry kind="lib" path="libs/jsoup-1.15.3.jar"/>
+	<classpathentry kind="lib" path="libs/mysql-connector-java-8.0.30.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
