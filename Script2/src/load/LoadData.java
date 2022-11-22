@@ -4,14 +4,24 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-import dao.ConfigDAO;
+import dao.DateDAO;
 import dao.LogDAO;
+import dao.LotteryDAO;
+import dao.PrizeDAO;
 import dao.ProvinceDAO;
-import dao.SourceDao;
+import dao.ResultDAO;
+import dao.SourceDAO;
 import model.Config;
+import model.Date;
 import model.FileLog;
+import model.Lottery;
+import model.Prize;
+import model.Province;
+import model.Result;
+import model.Source;
 
 public class LoadData {
 
@@ -41,36 +51,134 @@ public class LoadData {
 		}
 	}
 
-	public void loadSourDim(String path) {
-		File file = new File(path);
-		if (file.exists()) {
-			String fileContent = readFile(path);
-			String[] lines = fileContent.split("\\n");
-			String sourName = lines[0];
-			String sourUrl = lines[1];
-			if (SourceDao.getSource(sourName, sourUrl) == null) {
-				SourceDao.addSource(sourName, sourUrl);
-			}
+	public String loadSourDim(String source) {
+		String sourceName = source.substring(source.indexOf("https://") + 8, source.indexOf("."));
+		if (SourceDAO.getSource(sourceName) == null) {
+			Source sour = new Source();
+			sour.setName(sourceName);
+			sour.setUrl(source);
+			SourceDAO.addSource(sour);
 		}
+		return sourceName;
 	}
 
-	public void loadProvinceDim(String path) {
+	public List<String> loadProvinceDim(String path) {
 		String fileContent = readFile(path);
 		String[] lines = fileContent.split("\\n");
-		for (int i = 3; i < lines.length; i++) {
+		List<String> provinces = new ArrayList<String>();
+		for (int i = 1; i < lines.length; i++) {
 			String provinceName = lines[i].split(",")[0];
 			if (ProvinceDAO.getProvince(provinceName) == null) {
-				ProvinceDAO.addProvince(provinceName);
+				Province province = new Province();
+				province.setName(provinceName);
+				ProvinceDAO.addProvince(province);
+				provinces.add(provinceName);
+			}
+		}
+		return provinces;
+	}
+
+	public String loadDateDim(String path) {
+		String fileContent = readFile(path);
+		String[] lines = fileContent.split("\\n");
+		String fullDate = null;
+		for (int i = 1; i < lines.length; i++) {
+			fullDate = lines[i].split(",")[1];
+			if (DateDAO.getDate(fullDate) == null) {
+				String day = fullDate.substring(0, fullDate.lastIndexOf(" "));
+				String shortDate = fullDate.substring(fullDate.lastIndexOf(" ") + 1, fullDate.length());
+				String[] splitShortDate = shortDate.split("/");
+				int date = Integer.parseInt(splitShortDate[0]);
+				int month = Integer.parseInt(splitShortDate[1]);
+				int year = Integer.parseInt(splitShortDate[2]);
+				Date dateDim = new Date();
+				dateDim.setFullDate(fullDate);
+				dateDim.setDay(day);
+				dateDim.setDate(date);
+				dateDim.setMonth(month);
+				dateDim.setYear(year);
+				DateDAO.addDate(dateDim);
+			}
+		}
+		return fullDate;
+	}
+
+	public double getPrize(String prizeName) {
+		switch (prizeName) {
+		case "Giải 8": {
+			return 100000;
+		}
+		case "Giải 7": {
+			return 200000;
+		}
+		case "Giải 6": {
+			return 400000;
+		}
+		case "Giải 5": {
+			return 1000000;
+		}
+		case "Giải 4": {
+			return 3000000;
+		}
+		case "Giải 3": {
+			return 10000000;
+		}
+		case "Giải 2": {
+			return 15000000;
+		}
+		case "Giải 1": {
+			return 30000000;
+		}
+		case "Giải ĐB": {
+			return 2000000000;
+		}
+		default:
+			throw new IllegalArgumentException("Unexpected value: " + prizeName);
+		}
+	}
+
+	public void loadPrize(String path) {
+		String fileContent = readFile(path);
+		String[] lines = fileContent.split("\\n");
+		String[] listPrizes = lines[0].split(",");
+		for (int i = 2; i < listPrizes.length; i++) {
+			Prize prizeDim = new Prize();
+			String prizeName = listPrizes[i];
+			if (PrizeDAO.getPrize(prizeName) == null) {
+				double prize = getPrize(prizeName);
+				prizeDim.setName(prizeName);
+				prizeDim.setPrize(prize);
+				PrizeDAO.addPrize(prizeDim);
 			}
 		}
 	}
 
-	public void loadDateDim(String path) {
+	public void loadLottery(String path, String sourceName, String fullDate) {
 		String fileContent = readFile(path);
 		String[] lines = fileContent.split("\\n");
-		for (int i = 3; i < lines.length; i++) {
-			String date = lines[i].split(",")[1];
-			System.out.println(date);
+		String[] listPrizes = lines[0].split(",");
+		;
+		for (int i = 1; i < lines.length; i++) {
+			String[] lineData = lines[i].split(",");
+			String provinceName = lineData[0];
+			String shortDate = fullDate.substring(fullDate.lastIndexOf(" ") + 1, fullDate.length());
+			String idLot = sourceName + "_" + shortDate.replaceAll("/", "-") + "_" + provinceName;
+			if (LotteryDAO.getLottery(idLot) == null) {
+				Province province = ProvinceDAO.getProvince(provinceName);
+				Source source = SourceDAO.getSource(sourceName);
+				Date date = DateDAO.getDate(fullDate);
+				Lottery lottery = new Lottery(idLot, date, source, province);
+				LotteryDAO.addLottery(lottery);
+				for (int j = 2; j < lineData.length; j++) {
+					String prizeName = listPrizes[j];
+					Prize prize = PrizeDAO.getPrize(prizeName);
+					if (ResultDAO.getResult(idLot, prize.getIdPri()) == null) {
+						String results = lineData[j];
+						Result result = new Result(lottery, prize, results);
+						ResultDAO.addResult(result);
+					}
+				}
+			}
 		}
 	}
 
@@ -84,12 +192,17 @@ public class LoadData {
 			// connect db staging
 //			get file_name in row data has date = today and status = ER  from table file_log
 			for (FileLog log : logs) {
-				Config config = ConfigDAO.getConfig(1);
+				Config config = log.getConfig();
+//				get file csv has file name = file_name from ftp server or local
 				String localFilePath = config.getSourceLocal() + "\\" + log.getFileName();
-				loadSourDim(localFilePath);
-				loadSourDim(localFilePath);
+//				save data from csv file to database staging
+				String sourceName = loadSourDim(config.getSource());
 				loadProvinceDim(localFilePath);
-				loadDateDim(localFilePath);
+				String fullDate = loadDateDim(localFilePath);
+				loadPrize(localFilePath);
+				loadLottery(localFilePath, sourceName, fullDate);
+//				get last row from table file_log has status ER and update status SR
+				LogDAO.setLogState(log.getId(), "SR");
 			}
 		}
 	}
@@ -97,5 +210,6 @@ public class LoadData {
 	public static void main(String[] args) {
 		LoadData load = new LoadData();
 		load.loadData();
+		System.out.println("finish");
 	}
 }
