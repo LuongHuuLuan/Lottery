@@ -17,7 +17,7 @@ public class LogDAO {
 			Connection connect = ConnectControl.getInstance().getConnection();
 			String sql = "INSERT INTO FILE_LOG(id_config, file_name, date, state, contact) VALUES(?,?,?,?,?)";
 			PreparedStatement ps = connect.prepareStatement(sql);
-			ps.setInt(1, fileLog.getIdConfig());
+			ps.setInt(1, fileLog.getConfig().getIdConfig());
 			ps.setString(2, fileLog.getFileName());
 			ps.setTimestamp(3, fileLog.getDate());
 			ps.setString(4, fileLog.getState());
@@ -45,7 +45,7 @@ public class LogDAO {
 				Timestamp date = resultSet.getTimestamp(4);
 				String state = resultSet.getString(5);
 				int contact = resultSet.getInt(6);
-				log = new FileLog(id, idConfig, fileName, date, state, contact);
+				log = new FileLog(id, ConfigDAO.getConfig(idConfig), fileName, date, state, contact);
 				break;
 			}
 		} catch (SQLException e) {
@@ -68,7 +68,7 @@ public class LogDAO {
 				Timestamp date = resultSet.getTimestamp(4);
 				String state = resultSet.getString(5);
 				int contact = resultSet.getInt(6);
-				FileLog log = new FileLog(id, idConfig, fileName, date, state, contact);
+				FileLog log = new FileLog(id, ConfigDAO.getConfig(idConfig), fileName, date, state, contact);
 				logs.add(log);
 				break;
 			}

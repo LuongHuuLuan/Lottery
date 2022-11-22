@@ -98,6 +98,7 @@ public class ExtractXSDP {
 			return "";
 		}
 	}
+
 // crawling xsmn.me
 	public String crawling_xsmn_me(String url) throws IOException {
 		List<String> provinces = new ArrayList<String>();
@@ -177,16 +178,18 @@ public class ExtractXSDP {
 						+ src.substring(src.indexOf("//") + 2, src.indexOf(".")) + ".csv";
 //				insert 1 row to table file_log(status ES)
 				FileLog fileLog = new FileLog();
-				fileLog.setIdConfig(1);
+				fileLog.setConfig(ConfigDAO.getConfig(1));
 				fileLog.setFileName(fileName);
 				fileLog.setDate(today.toTimeStamp());
 				fileLog.setState("ES");
-				fileLog.setContact(2);
+//				fileLog.setContact(2);
+				fileLog.setContact(1);
 				LogDAO.saveLog(fileLog);
 
 //				get data from source
-				String data = src.substring(src.indexOf("//") + 2, src.indexOf(".")) + "\n" + url + "\n"
-						+ "Tỉnh,Ngày,Giải 8,Giải 7,Giải 6,Giải 5,Giải 4,Giải 3,Giải 2,Giải 1,Giải ĐB\n";
+//				String data = src.substring(src.indexOf("//") + 2, src.indexOf(".")) + "\n" + url + "\n"
+//						+ "Tỉnh,Ngày,Giải 8,Giải 7,Giải 6,Giải 5,Giải 4,Giải 3,Giải 2,Giải 1,Giải ĐB\n";
+				String data ="Tỉnh,Ngày,Giải 8,Giải 7,Giải 6,Giải 5,Giải 4,Giải 3,Giải 2,Giải 1,Giải ĐB\n";
 				data += crawling(url);
 				if (data.trim().length() != 0) {
 //					has data
@@ -220,7 +223,7 @@ public class ExtractXSDP {
 
 //				insert 1 row to table file_log(status ES)
 				FileLog fileLog = new FileLog();
-				fileLog.setIdConfig(1);
+				fileLog.setConfig(ConfigDAO.getConfig(1));
 				fileLog.setFileName(fileName);
 				date.setTime(17);
 				date.setMinute(50);
@@ -231,8 +234,9 @@ public class ExtractXSDP {
 				LogDAO.saveLog(fileLog);
 
 //				get data from source
-				String data = src.substring(src.indexOf("//") + 2, src.indexOf(".")) + "\n" + url + "\n"
-						+ "Tỉnh,Ngày,Giải 8,Giải 7,Giải 6,Giải 5,Giải 4,Giải 3,Giải 2,Giải 1,Giải ĐB\n";
+//				String data = src.substring(src.indexOf("//") + 2, src.indexOf(".")) + "\n" + url + "\n"
+//						+ "Tỉnh,Ngày,Giải 8,Giải 7,Giải 6,Giải 5,Giải 4,Giải 3,Giải 2,Giải 1,Giải ĐB\n";
+				String data ="Tỉnh,Ngày,Giải 8,Giải 7,Giải 6,Giải 5,Giải 4,Giải 3,Giải 2,Giải 1,Giải ĐB\n";
 				data += crawling(url);
 				if (data.trim().length() != 0) {
 //					has data

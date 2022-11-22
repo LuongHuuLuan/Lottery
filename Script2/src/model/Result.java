@@ -1,83 +1,42 @@
 package model;
 
-import java.util.List;
-
 public class Result {
-	private String day;
-	private String date;
-	private List<String> provinces;
-	private List<String> results;
+	private Lottery lottery;
+	private Prize prize;
+	private String result;
 
 	public Result() {
 
 	}
 
-	public Result(String day, String date, List<String> provinces, List<String> results) {
-		this.day = day;
-		this.date = date;
-		this.provinces = provinces;
-		this.results = results;
+	public Result(Lottery lottery, Prize prize, String result) {
+		this.lottery = lottery;
+		this.prize = prize;
+		this.result = result;
 	}
 
-	public String getDay() {
-		return day;
+	public Lottery getLottery() {
+		return lottery;
 	}
 
-	public void setDay(String day) {
-		this.day = day;
+	public void setLottery(Lottery lottery) {
+		this.lottery = lottery;
 	}
 
-	public String getDate() {
-		return date;
+	public Prize getPrize() {
+		return prize;
 	}
 
-	public void setDate(String date) {
-		this.date = date;
+	public void setPrize(Prize prize) {
+		this.prize = prize;
 	}
 
-	public List<String> getProvinces() {
-		return provinces;
-	}
-
-	public void setProvinces(List<String> provinces) {
-		this.provinces = provinces;
-	}
-
-	public List<String> getResults() {
-		return results;
-	}
-
-	public void setResults(List<String> results) {
-		this.results = results;
-	}
-
-	@Override
-	public String toString() {
-		String result = "";
-		for (int i = 0; i < provinces.size(); i++) {
-			result += provinces.get(i) + "," + day + " " + date;
-			result += "," + results.get(i);
-			result += "," + results.get(i + provinces.size());
-			result += "," + results.get(i + provinces.size() * 2);
-			result += "," + results.get(i + provinces.size() * 3);
-			result += "," + results.get(i + provinces.size() * 4);
-			result += "," + results.get(i + provinces.size() * 5);
-			result += "," + results.get(i + provinces.size() * 6);
-			result += "," + results.get(i + provinces.size() * 7);
-			result += "," + results.get(i + provinces.size() * 8) + "\n";
-		}
+	public String getResult() {
 		return result;
 	}
 
-	public int getIDForProvice(String province) {
-		String[] provinces = { "Kiên Giang", "Tiền Giang", "Đà Lạt", "TPHCM", "Đồng Tháp", "Cà Mau", "Vũng Tàu",
-				"Bến Tre", "Bạc Liêu", "Sóc Trăng", "Cần Thơ", "An Giang", "Bình Thuận", "Đồng Nai", "Bình Dương",
-				"Tây Ninh", "Vĩnh Long", "Long An", "Trà Vinh", "Bình Phước", "Hậu Giang" };
-		for (int i = 0; i < provinces.length; i++) {
-			if (provinces[i].toLowerCase().equals(province.toLowerCase())) {
-				return i + 1;
-			}
-		}
-		return -1;
+	public void setResult(String result) {
+		this.result = result;
 	}
+
 }

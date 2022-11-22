@@ -7,10 +7,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import connection.ConnectStaging;
-import model.Province;
+import model.Prize;
 
-public class ProvinceDAO {
-	public static int addProvince(Province province) {
+public class PrizeDAO {
+	public static int addPrize(Prize prize) {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -18,9 +18,10 @@ public class ProvinceDAO {
 			int id = -1;
 			connection = ConnectStaging.getInstance().getConnection();
 			connection.setAutoCommit(false);
-			String sql = "INSERT INTO province_dim(name) values(?)";
+			String sql = "INSERT INTO prize_dim(name, prize) values(?,?)";
 			ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			ps.setString(1, province.getName());
+			ps.setString(1, prize.getName());
+			ps.setDouble(2, prize.getPrize());
 			ps.executeUpdate();
 			rs = ps.getGeneratedKeys();
 			if (rs.next()) {
@@ -52,18 +53,18 @@ public class ProvinceDAO {
 		return -1;
 	}
 
-	public static Province getProvince(int id) {
+	public static Prize getPrize(int id) {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			connection = ConnectStaging.getInstance().getConnection();
-			String sql = "SELECT id_pro, name from province_dim where id_pro = ?";
+			String sql = "SELECT * from prize_dim where id_pri = ?";
 			ps = connection.prepareStatement(sql);
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				return new Province(rs.getInt(1), rs.getString(2));
+				return new Prize(rs.getInt(1), rs.getString(2), rs.getDouble(3));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -82,19 +83,19 @@ public class ProvinceDAO {
 
 		return null;
 	}
-
-	public static Province getProvince(String name) {
+	
+	public static Prize getPrize(String name) {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			connection = ConnectStaging.getInstance().getConnection();
-			String sql = "SELECT id_pro, name from province_dim where name = ?";
+			String sql = "SELECT * from prize_dim where name = ?";
 			ps = connection.prepareStatement(sql);
 			ps.setString(1, name);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				return new Province(rs.getInt(1), rs.getString(2));
+				return new Prize(rs.getInt(1), rs.getString(2), rs.getDouble(3));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
