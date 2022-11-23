@@ -29,21 +29,17 @@ public class LotteryDAO {
 		}
 		return result;
 	}
-
+	
 	// add 1 row in the table lottery of DataWH
-	public static boolean addLotteryToDaWH(String nkIdLot, int idDate, int idSour, int idPro, String isDelete,
-			Date update, Date expried) {
+	public static boolean addLotteryToDaWH(String nkIdLot, int idDate, int idSour, int idPro) {
 		try {
 			Connection connect = ConnectDW.getInstance().getConnection();
-			String sql = "INSERT INTO lottery(nk_id_lot, id_date, id_sour, id_pro, is_delete, update_date, expried_date) values(?,?,?,?,?,?,?)";
+			String sql = "INSERT INTO lottery(nk_id_lot, id_date, id_sour, id_pro) values(?,?,?,?)";
 			PreparedStatement ps = connect.prepareStatement(sql);
 			ps.setString(1, nkIdLot);
 			ps.setInt(2, idDate);
 			ps.setInt(3, idSour);
 			ps.setInt(4, idPro);
-			ps.setString(5, isDelete);
-			ps.setDate(6, update);
-			ps.setDate(7, expried);
 			int status = ps.executeUpdate();
 			if (status > 0) {
 				return true;

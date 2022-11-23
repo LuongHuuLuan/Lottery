@@ -1,17 +1,20 @@
 package loadDW;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 
 import connection.ConnectStaging;
 import dao.DateDAO;
+import dao.LogDAO;
 import dao.LotteryDAO;
 import dao.PrizeDAO;
 import dao.ProvinceDAO;
 import dao.ResultDAO;
 import dao.SourceDao;
+import dao.StagingDAO;
 import model.DateLottery;
+import model.FileLog;
 import model.Lottery;
 import model.MyDate;
 import model.Prize;
@@ -105,7 +108,6 @@ public class LoadDataToDW {
 		try {
 			ArrayList<Result> resultStagings = ResultDAO.getAllResultInStaging();
 			int idLotDW = 0, idPriWH = 0, idDateWH = 0, idSourWH = 0, idProWH = 0;
-			MyDate myDate = new MyDate();
 			String resultLottery = "";
 			for (Result result : resultStagings) {
 				resultLottery = result.getResult();
@@ -146,12 +148,13 @@ public class LoadDataToDW {
 						idPriWH = p.getIdPri();
 					}
 				}
-
-				Result resultCheck = ResultDAO.getResultInDataWH(idLotDW, idPriWH, resultLottery);
-				if (!resultCheck.getIdLot().equalsIgnoreCase("" + idLotDW) || resultCheck.getIdPri() != idPriWH
-						|| !resultCheck.getResult().equals(resultLottery)) {
-					ResultDAO.addResultInDataWH(idLotDW, idPriWH, resultLottery, "false",
-							new Date(myDate.getYear(), myDate.getMonth(), myDate.getDay()), new Date(3000, 12, 31));
+				Result resultCheck = ResultDAO.getResultInDataWH(idLotDW, idPriWH);
+				if (!resultCheck.getIdLot().equalsIgnoreCase("" + idLotDW) || resultCheck.getIdPri() != idPriWH) {
+					ResultDAO.addResultInDataWH(idLotDW, idPriWH, resultLottery);
+				} else if (resultCheck.getIdLot().equalsIgnoreCase("" + idLotDW) && resultCheck.getIdPri() == idPriWH
+						&& !resultCheck.getResult().equals(resultLottery)) {
+					ResultDAO.updateIsDelete(idLotDW + "", idPriWH);
+					ResultDAO.addResultInDataWH(idLotDW, idPriWH, resultLottery);
 				}
 			}
 		} catch (Exception e) {
@@ -192,11 +195,9 @@ public class LoadDataToDW {
 					}
 				}
 				Lottery lotteryCheck = LotteryDAO.getLotteryInDataWH(idDateWH, idSourWH, idProWH);
-				System.out.println(lotteryCheck.getIdDate() + " " + idDateWH);
 				if (lotteryCheck.getIdDate() != idDateWH || lotteryCheck.getIdSour() != idSourWH
 						|| lotteryCheck.getIdPro() != idProWH) {
-					LotteryDAO.addLotteryToDaWH(nkIdLotWH, idDateWH, idSourWH, idProWH, "false",
-							new Date(myDate.getYear(), myDate.getMonth(), myDate.getDay()), new Date(3000, 12, 31));
+					LotteryDAO.addLotteryToDaWH(nkIdLotWH, idDateWH, idSourWH, idProWH);
 				}
 			}
 		} catch (Exception e) {
@@ -215,22 +216,22 @@ public class LoadDataToDW {
 	public void loadData() {
 		// connect db control
 //		 get all row data has date = today and status = SR from table file_log
-//		List<FileLog> logs = LogDAO.getAllExtract();
+		List<FileLog> logs = LogDAO.getAllExtract();
 //		 has row
-//		if (logs.size() != 0) {
+		if (logs.size() != 0) {
 //		 connect db staging and db warehouse
 //		 transform data
-		loadDataProvince();
-		loadDataSource();
-		loadDataPrize();
-		loadDateDate();
-		loadDataLottery();
-		loadDataResult();
-//			StagingDAO.deleteDateStaging();
-//			LogDAO.updateStatus();
+			loadDataProvince();
+			loadDataSource();
+			loadDataPrize();
+			loadDateDate();
+			loadDataLottery();
+			loadDataResult();
+			StagingDAO.deleteDateStaging();
+			LogDAO.updateStatus();
 
+		}
 	}
-//	}
 
 	public static void main(String[] args) {
 		LoadDataToDW load = new LoadDataToDW();
