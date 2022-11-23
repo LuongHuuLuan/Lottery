@@ -1,7 +1,6 @@
 package dao;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,18 +8,18 @@ import java.util.ArrayList;
 
 import connection.ConnectDW;
 import connection.ConnectStaging;
+import model.MyDate;
 import model.Result;
 
 public class ResultDAO {
 	// get 1 row the table result in DataWH
-	public static Result getResultInDataWH(int idLot, int idPri, String result) {
+	public static Result getResultInDataWH(int idLot, int idPri) {
 		try {
 			Connection connect = ConnectDW.getInstance().getConnection();
-			String sql = "SELECT * from result where id_lot = ? and id_pri = ? and result = ?";
+			String sql = "SELECT * from result where id_lot = ? and id_pri = ? and is_delete = 'FALSE'";
 			PreparedStatement preparedStatement = connect.prepareStatement(sql);
 			preparedStatement.setInt(1, idLot);
 			preparedStatement.setInt(2, idPri);
-			preparedStatement.setString(3, result);
 			ResultSet resultset = preparedStatement.executeQuery();
 			while (resultset.next()) {
 				return new Result(resultset.getInt(1) + "", resultset.getInt(2), resultset.getString(3));
@@ -50,18 +49,14 @@ public class ResultDAO {
 	}
 
 	// add 1 row the table result in DataWH
-	public static boolean addResultInDataWH(int idLot, int idPri, String result, String isDelete, Date update,
-			Date expried) {
+	public static boolean addResultInDataWH(int idLot, int idPri, String result) {
 		try {
 			Connection connect = ConnectDW.getInstance().getConnection();
-			String sql = "INSERT INTO result(id_lot, id_pri, result ,is_delete, update_date, expried_date) values(?,?,?,?,?,?)";
+			String sql = "INSERT INTO result(id_lot, id_pri, result) values(?,?,?)";
 			PreparedStatement ps = connect.prepareStatement(sql);
 			ps.setInt(1, idLot);
 			ps.setInt(2, idPri);
 			ps.setString(3, result);
-			ps.setString(4, isDelete);
-			ps.setDate(5, update);
-			ps.setDate(6, expried);
 			int status = ps.executeUpdate();
 			if (status > 0) {
 				return true;
@@ -72,11 +67,25 @@ public class ResultDAO {
 			return false;
 		}
 	}
-//
-//	@SuppressWarnings("deprecation")
-//	public static void main(String[] args) {
-//		LocalDateTime time = LocalDateTime.now();
-//		ResultDAO.addResultInDataWH(1, 2, "85236", "false",
-//				new Date(time.getYear(), time.getMonthValue(), time.getDayOfMonth()), new Date(3000, 12, 31));
-//	}
+
+	// update table file_log isDelete FALSE==>>TRUE
+	public static void updateIsDelete(String idLot, int idPri) {
+		MyDate myDate = new MyDate();
+		try {
+			Connection connect = ConnectDW.getInstance().getConnection();
+			String sql = "update result set is_delete = 'TRUE',update_date=? where is_delete = 'FALSE' and id_lot=? and id_pri=?";
+			PreparedStatement preparedStatement = connect.prepareStatement(sql);
+			preparedStatement.setTimestamp(1, myDate.toTimeStamp());
+			preparedStatement.setString(2, idLot);
+			preparedStatement.setInt(3, idPri);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void main(String[] args) {
+		MyDate myDate = new MyDate();
+		System.out.println(myDate.getYear());
+	}
 }

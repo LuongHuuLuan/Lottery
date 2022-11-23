@@ -107,17 +107,17 @@ CREATE TABLE LOTTERY(
      id_date int,
      id_sour int,
      id_pro int,
-     is_delete varchar(5),
-     update_date date,
-     expried_date date
+     is_delete varchar(5) DEFAULT 'FALSE',
+     update_date date DEFAULT CURRENT_TIMESTAMP,
+     expried_date date DEFAULT '9999/12/31'
 );
 CREATE TABLE RESULT(
      id_lot varchar(100),
      id_pri int,
      result varchar(255),
-     is_delete varchar(5),
-     update_date date,
-     expried_date date
+     is_delete varchar(5) DEFAULT 'FALSE',
+     update_date date DEFAULT CURRENT_TIMESTAMP,
+     expried_date date DEFAULT '9999/12/31'
 );
 
 # END DB DW
