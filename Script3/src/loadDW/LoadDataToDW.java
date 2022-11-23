@@ -231,7 +231,7 @@ public class LoadDataToDW {
 			loadDateDate();
 			loadDataLottery();
 			loadDataResult();
-			StagingDAO.deleteDateStaging();
+//			StagingDAO.deleteDateStaging();
 			LogDAO.updateStatus();
 
 		}

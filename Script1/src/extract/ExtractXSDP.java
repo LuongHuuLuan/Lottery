@@ -143,7 +143,7 @@ public class ExtractXSDP {
 
 	public boolean saveCSV(String content, String dest) throws IOException {
 		if (content.length() != 0) {
-			FileWriter fw = new FileWriter(dest, true);
+			FileWriter fw = new FileWriter(dest);
 			PrintWriter pw = new PrintWriter(fw);
 			pw.write(content);
 			pw.flush();
