@@ -3,9 +3,9 @@ package model;
 public class Prize {
 	private int idPri;
 	private String namePri;
-	private int prize;
+	private double prize;
 
-	public Prize(int idPri, String namePri, int prize) {
+	public Prize(int idPri, String namePri, double prize) {
 		super();
 		this.idPri = idPri;
 		this.namePri = namePri;
@@ -28,11 +28,11 @@ public class Prize {
 		this.namePri = namePri;
 	}
 
-	public int getPrize() {
+	public double getPrize() {
 		return prize;
 	}
 
-	public void setPrize(int prize) {
+	public void setPrize(double prize) {
 		this.prize = prize;
 	}
 
