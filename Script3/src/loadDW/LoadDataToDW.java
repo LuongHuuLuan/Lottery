@@ -218,12 +218,13 @@ public class LoadDataToDW {
 
 	public void loadData() {
 		// connect db control
-		// get all row data has date = today and status = SR from table file_log
+//		 get all row data has date = today and status = SR from table file_log
 		List<FileLog> logs = LogDAO.getAllExtract();
-		// has row
+//		 has row
 		if (logs.size() != 0) {
-			// connect db staging and db warehouse
-			// transform data
+
+//		 connect db staging and db warehouse
+//		 transform data
 			loadDataProvince();
 			loadDataSource();
 			loadDataPrize();
@@ -238,8 +239,7 @@ public class LoadDataToDW {
 
 	public static void main(String[] args) {
 		LoadDataToDW load = new LoadDataToDW();
-		StagingDAO.deleteDateStaging();
-		System.out.println("Done");
 		load.loadData();
+		System.out.println("Done");
 	}
 }
