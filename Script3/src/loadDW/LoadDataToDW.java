@@ -224,14 +224,14 @@ public class LoadDataToDW {
 		if (logs.size() != 0) {
 			// connect db staging and db warehouse
 			// transform data
-//			loadDataProvince();
-//			loadDataSource();
-//			loadDataPrize();
-//			loadDateDate();
-//			loadDataLottery();
-//			loadDataResult();
-//			StagingDAO.deleteDateStaging();
-//			LogDAO.updateStatus();
+			loadDataProvince();
+			loadDataSource();
+			loadDataPrize();
+			loadDateDate();
+			loadDataLottery();
+			loadDataResult();
+			StagingDAO.deleteDateStaging();
+			LogDAO.updateStatus();
 
 		}
 	}
