@@ -1,22 +1,22 @@
 package model;
 
 public class Result {
-	private int idLot;
+	private String idLot;
 	private int idPri;
 	private String result;
 
-	public Result(int idLot, int idPri, String result) {
+	public Result(String idLot, int idPri, String result) {
 		super();
 		this.idLot = idLot;
 		this.idPri = idPri;
 		this.result = result;
 	}
 
-	public int getIdLot() {
+	public String getIdLot() {
 		return idLot;
 	}
 
-	public void setIdLot(int idLot) {
+	public void setIdLot(String idLot) {
 		this.idLot = idLot;
 	}
 
@@ -34,11 +34,6 @@ public class Result {
 
 	public void setResult(String result) {
 		this.result = result;
-	}
-
-	@Override
-	public String toString() {
-		return "Result [idLot=" + idLot + ", idPri=" + idPri + ", result=" + result + "]";
 	}
 
 }

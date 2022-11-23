@@ -43,7 +43,7 @@ public class StagingDAO {
 //truncate Database Staging
 	public static void deleteDateStaging() {
 		try {
-			Connection connect = ConnectStaging.getInstance().getConnection();
+			Connection connect = ConnectDW.getInstance().getConnection();
 			ArrayList<String> sqls = readTruncateStaging();
 			for (String s : sqls) {
 				String sql = s;

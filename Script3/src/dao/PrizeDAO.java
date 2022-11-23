@@ -24,7 +24,7 @@ public class PrizeDAO {
 			PreparedStatement preparedStatement = connect.prepareStatement(sql);
 			ResultSet resultSet = preparedStatement.executeQuery();
 			while (resultSet.next()) {
-				result.add(new Prize(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3)));
+				result.add(new Prize(resultSet.getInt(1), resultSet.getString(2), resultSet.getDouble(3)));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -41,7 +41,7 @@ public class PrizeDAO {
 			PreparedStatement preparedStatement = connect.prepareStatement(sql);
 			ResultSet resultSet = preparedStatement.executeQuery();
 			while (resultSet.next()) {
-				result.add(new Prize(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3)));
+				result.add(new Prize(resultSet.getInt(1), resultSet.getString(2), resultSet.getDouble(3)));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -67,14 +67,14 @@ public class PrizeDAO {
 	}
 
 	// update 1 row the table prize_dim of DataWH
-	public static void updatePrize(String name, int id, int prize) {
+	public static void updatePrize(String name, int id, double prize) {
 		try {
 			Connection connect = ConnectDW.getInstance().getConnection();
 			String sql = "update prize_dim set id_pri = ?, prize = ? where name = ?";
 			PreparedStatement pr = connect.prepareStatement(sql);
 
 			pr.setInt(1, id);
-			pr.setInt(2, prize);
+			pr.setDouble(2, prize);
 			pr.setString(3, name);
 			pr.executeUpdate();
 		} catch (Exception e) {
@@ -84,13 +84,13 @@ public class PrizeDAO {
 	}
 
 	// add 1 row to the table prize_dim in DataWH
-	public static boolean addPrizeToDaWH(String name, int prize) {
+	public static boolean addPrizeToDaWH(String name, double prize) {
 		try {
 			Connection connect = ConnectDW.getInstance().getConnection();
 			String sql = "INSERT INTO prize_dim(name, prize) values(?,?)";
 			PreparedStatement ps = connect.prepareStatement(sql);
 			ps.setString(1, name);
-			ps.setInt(2, prize);
+			ps.setDouble(2, prize);
 			int status = ps.executeUpdate();
 			if (status > 0) {
 				return true;
