@@ -3,7 +3,6 @@ package loadDW;
 import java.sql.Connection;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.List;
 
 import connection.ConnectStaging;
 import dao.DateDAO;
@@ -15,7 +14,6 @@ import dao.ResultDAO;
 import dao.SourceDao;
 import dao.StagingDAO;
 import model.DateLottery;
-import model.FileLog;
 import model.Lottery;
 import model.MyDate;
 import model.Prize;
@@ -114,10 +112,10 @@ public class LoadDataToDW {
 			for (Result result : resultStagings) {
 				resultLottery = result.getResult();
 				String namePri = PrizeDAO.getPrizeInStaging(result.getIdPri()).getNamePri();
-				int idLotSG = result.getIdLot();
+				String idLotSG = result.getIdLot();
 				ArrayList<Lottery> lotterieStaging = LotteryDAO.getAllLotteryInStaging();
 				for (Lottery l : lotterieStaging) {
-					if (idLotSG == l.getIdLot()) {
+					if (idLotSG.equalsIgnoreCase(l.getIdLot())) {
 						String namePro = ProvinceDAO.getProvinceInStaging(l.getIdPro()).getName();
 						String urlSour = SourceDao.getSourceInStaging(l.getIdSour()).getUrl();
 						int date = DateDAO.getDateInStaging(l.getIdDate()).getDate();
@@ -152,7 +150,7 @@ public class LoadDataToDW {
 				}
 
 				Result resultCheck = ResultDAO.getResultInDataWH(idLotDW, idPriWH, resultLottery);
-				if (resultCheck.getIdLot() != idLotDW || resultCheck.getIdPri() != idPriWH
+				if (!resultCheck.getIdLot().equalsIgnoreCase("" + idLotDW) || resultCheck.getIdPri() != idPriWH
 						|| !resultCheck.getResult().equals(resultLottery)) {
 					ResultDAO.addResultInDataWH(idLotDW, idPriWH, resultLottery, "false",
 							new Date(myDate.getYear(), myDate.getMonth(), myDate.getDay()), new Date(3000, 12, 31));
@@ -219,23 +217,22 @@ public class LoadDataToDW {
 	public void loadData() {
 		// connect db control
 //		 get all row data has date = today and status = SR from table file_log
-		List<FileLog> logs = LogDAO.getAllExtract();
+//		List<FileLog> logs = LogDAO.getAllExtract();
 //		 has row
-		if (logs.size() != 0) {
-
+//		if (logs.size() != 0) {
 //		 connect db staging and db warehouse
 //		 transform data
-			loadDataProvince();
-			loadDataSource();
-			loadDataPrize();
-			loadDateDate();
-			loadDataLottery();
-			loadDataResult();
-//			StagingDAO.deleteDateStaging();
-			LogDAO.updateStatus();
+		loadDataProvince();
+		loadDataSource();
+		loadDataPrize();
+		loadDateDate();
+		loadDataLottery();
+		loadDataResult();
+		StagingDAO.deleteDateStaging();
+		LogDAO.updateStatus();
 
-		}
 	}
+//	}
 
 	public static void main(String[] args) {
 		LoadDataToDW load = new LoadDataToDW();

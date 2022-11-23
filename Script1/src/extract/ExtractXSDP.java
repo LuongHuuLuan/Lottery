@@ -269,8 +269,8 @@ public class ExtractXSDP {
 //		MyDate yesterday = new MyDate(25, 10, 2022);
 		ExtractXSDP c = new ExtractXSDP();
 		MyDate today = new MyDate();
-//		c.crawlToday();
-		c.crawl(today.previousDay());
+		c.crawlToday();
+//		c.crawl(today.previousDay());
 //		c.crawl(start, end);
 
 		JOptionPane.showMessageDialog(null, "Finish");

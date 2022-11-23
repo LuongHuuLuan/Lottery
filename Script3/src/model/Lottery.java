@@ -1,12 +1,12 @@
 package model;
 
 public class Lottery {
-	private int idLot;
+	private String idLot;
 	private int idDate;
 	private int idSour;
 	private int idPro;
 
-	public Lottery(int idLot, int idDate, int idSour, int idPro) {
+	public Lottery(String idLot, int idDate, int idSour, int idPro) {
 		super();
 		this.idLot = idLot;
 		this.idDate = idDate;
@@ -14,11 +14,11 @@ public class Lottery {
 		this.idPro = idPro;
 	}
 
-	public int getIdLot() {
+	public String getIdLot() {
 		return idLot;
 	}
 
-	public void setIdLot(int idLot) {
+	public void setIdLot(String idLot) {
 		this.idLot = idLot;
 	}
 
@@ -44,11 +44,6 @@ public class Lottery {
 
 	public void setIdPro(int idPro) {
 		this.idPro = idPro;
-	}
-
-	@Override
-	public String toString() {
-		return "Lottery [idLot=" + idLot + ", idDate=" + idDate + ", ifSour=" + idSour + ", idPro=" + idPro + "]";
 	}
 
 }

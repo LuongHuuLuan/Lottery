@@ -23,13 +23,13 @@ public class ResultDAO {
 			preparedStatement.setString(3, result);
 			ResultSet resultset = preparedStatement.executeQuery();
 			while (resultset.next()) {
-				return new Result(resultset.getInt(1), resultset.getInt(2), resultset.getString(3));
+				return new Result(resultset.getInt(1) + "", resultset.getInt(2), resultset.getString(3));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		return new Result(0, 0, "ERR");
+		return new Result("ERR", 0, "ERR");
 	}
 
 	// get all row the table result in Staging
@@ -41,7 +41,7 @@ public class ResultDAO {
 			PreparedStatement preparedStatement = connect.prepareStatement(sql);
 			ResultSet resultset = preparedStatement.executeQuery();
 			while (resultset.next()) {
-				results.add(new Result(resultset.getInt(1), resultset.getInt(2), resultset.getString(3)));
+				results.add(new Result(resultset.getString(1), resultset.getInt(2), resultset.getString(3)));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

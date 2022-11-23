@@ -21,7 +21,7 @@ public class LotteryDAO {
 			PreparedStatement preparedStatement = connect.prepareStatement(sql);
 			ResultSet resultSet = preparedStatement.executeQuery();
 			while (resultSet.next()) {
-				result.add(new Lottery(resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3),
+				result.add(new Lottery(resultSet.getString(1), resultSet.getInt(2), resultSet.getInt(3),
 						resultSet.getInt(4)));
 			}
 		} catch (Exception e) {
@@ -66,13 +66,13 @@ public class LotteryDAO {
 			preparedStatement.setInt(3, idPro);
 			ResultSet resultset = preparedStatement.executeQuery();
 			while (resultset.next()) {
-				return new Lottery(0, resultset.getInt(3), resultset.getInt(4), resultset.getInt(5));
+				return new Lottery("", resultset.getInt(3), resultset.getInt(4), resultset.getInt(5));//lưu ý
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		return new Lottery(0, 0, 0, 0);
+		return new Lottery("", 0, 0, 0);
 	}
 
 	// get 1 row the table lottery in DataWH
