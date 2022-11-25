@@ -2,13 +2,15 @@ package model;
 
 public class Prize {
 	private int idPri;
-	private String namePri;
+	private String name;
 	private double prize;
 
-	public Prize(int idPri, String namePri, double prize) {
-		super();
+	public Prize() {
+	}
+
+	public Prize(int idPri, String name, double prize) {
 		this.idPri = idPri;
-		this.namePri = namePri;
+		this.name = name;
 		this.prize = prize;
 	}
 
@@ -16,24 +18,24 @@ public class Prize {
 		return idPri;
 	}
 
-	public void setIdPri(int idPri) {
+	public void setIdPro(int idPri) {
 		this.idPri = idPri;
 	}
 
-	public String getNamePri() {
-		return namePri;
+	public String getName() {
+		return name;
 	}
 
-	public void setNamePri(String namePri) {
-		this.namePri = namePri;
-	}
-
-	public double getPrize() {
-		return prize;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public void setPrize(double prize) {
 		this.prize = prize;
+	}
+
+	public double getPrize() {
+		return prize;
 	}
 
 }

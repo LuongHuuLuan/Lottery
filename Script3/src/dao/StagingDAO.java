@@ -11,13 +11,9 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
-import connection.ConnectDW;
 import connection.ConnectStaging;
 
 public class StagingDAO {
-	public static void main(String[] args) {
-		StagingDAO.deleteDateStaging();
-	}
 
 	// read all content configs file
 	public static ArrayList<String> readTruncateStaging() {

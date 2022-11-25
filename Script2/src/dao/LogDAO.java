@@ -70,7 +70,7 @@ public class LogDAO {
 				int contact = resultSet.getInt(6);
 				FileLog log = new FileLog(id, ConfigDAO.getConfig(idConfig), fileName, date, state, contact);
 				logs.add(log);
-				break;
+//				break;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

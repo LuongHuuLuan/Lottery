@@ -1,6 +1,6 @@
 package model;
 
-public class DateLottery {
+public class Date {
 	private int idDate;
 	private String fullDate;
 	private String day;
@@ -8,20 +8,16 @@ public class DateLottery {
 	private int month;
 	private int year;
 
-	public DateLottery(int idDate, String fullDate, String day, int date, int month, int year) {
-		super();
+	public Date() {
+	}
+
+	public Date(int idDate, String fullDate, String day, int date, int month, int year) {
 		this.idDate = idDate;
 		this.fullDate = fullDate;
 		this.day = day;
 		this.date = date;
 		this.month = month;
 		this.year = year;
-	}
-
-	@Override
-	public String toString() {
-		return "DateLottery [idDate=" + idDate + ", fullDate=" + fullDate + ", day=" + day + ", date=" + date
-				+ ", month=" + month + ", year=" + year + "]";
 	}
 
 	public int getIdDate() {
@@ -52,8 +48,8 @@ public class DateLottery {
 		return date;
 	}
 
-	public void setDate(int date) {
-		this.date = date;
+	public void setDate(int day) {
+		this.date = day;
 	}
 
 	public int getMonth() {
