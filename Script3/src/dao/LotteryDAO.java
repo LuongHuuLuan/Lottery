@@ -1,95 +1,147 @@
 package dao;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import connection.ConnectDW;
 import connection.ConnectStaging;
+import model.Date;
 import model.Lottery;
+import model.Province;
+import model.Source;
 
 public class LotteryDAO {
-	// get all row in the table lottery of Staging
-	public static ArrayList<Lottery> getAllLotteryInStaging() {
-		ArrayList<Lottery> result = new ArrayList<Lottery>();
+	public static void addLottery(Lottery lottery, Database database) {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
-			Connection connect = ConnectStaging.getInstance().getConnection();
-			String sql = "select * from lottery";
-			PreparedStatement preparedStatement = connect.prepareStatement(sql);
-			ResultSet resultSet = preparedStatement.executeQuery();
-			while (resultSet.next()) {
-				result.add(new Lottery(resultSet.getString(1), resultSet.getInt(2), resultSet.getInt(3),
-						resultSet.getInt(4)));
+			String sql;
+			if (database == Database.Staging) {
+				connection = ConnectStaging.getInstance().getConnection();
+				sql = "INSERT INTO lottery(id_lot, id_date, id_sour, id_pro) values(?,?,?,?)";
+			} else {
+				connection = ConnectDW.getInstance().getConnection();
+				sql = "INSERT INTO lottery(nk_id_lot, id_date, id_sour, id_pro) values(?,?,?,?)";
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-	
-	// add 1 row in the table lottery of DataWH
-	public static boolean addLotteryToDaWH(String nkIdLot, int idDate, int idSour, int idPro) {
-		try {
-			Connection connect = ConnectDW.getInstance().getConnection();
-			String sql = "INSERT INTO lottery(nk_id_lot, id_date, id_sour, id_pro) values(?,?,?,?)";
-			PreparedStatement ps = connect.prepareStatement(sql);
-			ps.setString(1, nkIdLot);
-			ps.setInt(2, idDate);
-			ps.setInt(3, idSour);
-			ps.setInt(4, idPro);
-			int status = ps.executeUpdate();
-			if (status > 0) {
-				return true;
-			}
-			return false;
+			connection.setAutoCommit(false);
+			ps = connection.prepareStatement(sql);
+			ps.setString(1, lottery.getNkIdLot());
+			ps.setInt(2, lottery.getDate().getIdDate());
+			ps.setInt(3, lottery.getSource().getIdSour());
+			ps.setInt(4, lottery.getProvince().getIdPro());
+			ps.executeUpdate();
+			connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return false;
+			if (connection != null) {
+				try {
+					connection.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
 		}
 	}
 
-	// get 1 row the table lottery in DataWH
-	public static Lottery getLotteryInDataWH(int idDate, int idSour, int idPro) {
+	public static List<Lottery> getAllLotteriesFromStaging() {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<Lottery> lotteries = new ArrayList<Lottery>();
 		try {
-			Connection connect = ConnectDW.getInstance().getConnection();
-			String sql = "SELECT * from lottery where id_date = ? and id_sour = ? and id_pro = ?";
-			PreparedStatement preparedStatement = connect.prepareStatement(sql);
-			preparedStatement.setInt(1, idDate);
-			preparedStatement.setInt(2, idSour);
-			preparedStatement.setInt(3, idPro);
-			ResultSet resultset = preparedStatement.executeQuery();
-			while (resultset.next()) {
-				return new Lottery("", resultset.getInt(3), resultset.getInt(4), resultset.getInt(5));//lưu ý
+			connection = ConnectStaging.getInstance().getConnection();
+			String sql = "SELECT * from lottery";
+			ps = connection.prepareStatement(sql);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				String idLot = rs.getString(1);
+				Date date = DateDAO.getDate(rs.getInt(2), Database.Staging);
+				Source source = SourceDAO.getSource(rs.getInt(3), Database.Staging);
+				Province province = ProvinceDAO.getProvince(rs.getInt(4), Database.Staging);
+				Lottery lottery = new Lottery(idLot, date, source, province);
+				lotteries.add(lottery);
 			}
+			return lotteries;
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
 		}
-
-		return new Lottery("", 0, 0, 0);
+		return null;
 	}
 
-	// get 1 row the table lottery in DataWH
-	public static int getLotteryInDataWH(String nkIdLot, int idDate, int idSour, int idPro) {
+	public static Lottery getLottery(String id, Database database) {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
-			Connection connect = ConnectDW.getInstance().getConnection();
-			String sql = "SELECT id_lot from lottery where nk_id_lot = ? and id_date = ? and id_sour = ? and id_pro = ?";
-			PreparedStatement preparedStatement = connect.prepareStatement(sql);
-			preparedStatement.setString(1, nkIdLot);
-			preparedStatement.setInt(2, idDate);
-			preparedStatement.setInt(3, idSour);
-			preparedStatement.setInt(4, idPro);
-			ResultSet resultset = preparedStatement.executeQuery();
-			while (resultset.next()) {
-				return resultset.getInt(1);
+			String sql;
+			if (database == Database.Staging) {
+				connection = ConnectStaging.getInstance().getConnection();
+				sql = "SELECT * from lottery where id_lot = ?";
+			} else {
+				connection = ConnectDW.getInstance().getConnection();
+				sql = "SELECT * from lottery where nk_id_lot = ? and is_delete = 'FALSE'";
+			}
+			ps = connection.prepareStatement(sql);
+			ps.setString(1, id);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				if (database == Database.Staging) {
+					String idLot = rs.getString(1);
+					Date date = DateDAO.getDate(rs.getInt(2), database);
+					Source source = SourceDAO.getSource(rs.getInt(3), database);
+					Province province = ProvinceDAO.getProvince(rs.getInt(4), database);
+					return new Lottery(idLot, date, source, province);
+				} else {
+					int idLot = rs.getInt(1);
+					String nkIdLot = rs.getString(2);
+					Date date = DateDAO.getDate(rs.getInt(3), database);
+					Source source = SourceDAO.getSource(rs.getInt(4), database);
+					Province province = ProvinceDAO.getProvince(rs.getInt(5), database);
+					return new Lottery(idLot, nkIdLot, date, source, province);
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
 		}
-
-		return 0;
+		return null;
 	}
 
 }

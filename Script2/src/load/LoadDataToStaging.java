@@ -23,7 +23,7 @@ import model.Province;
 import model.Result;
 import model.Source;
 
-public class LoadData {
+public class LoadDataToStaging {
 
 	public String readFile(String path) {
 		File file = new File(path);
@@ -187,6 +187,7 @@ public class LoadData {
 		// connect db control
 //		get all row data has date = today and status = ER  from table file_log
 		List<FileLog> logs = LogDAO.getAllExtract();
+		System.out.println(logs.size());
 //		has row
 		if (logs.size() != 0) {
 			// connect db staging
@@ -208,7 +209,7 @@ public class LoadData {
 	}
 
 	public static void main(String[] args) {
-		LoadData load = new LoadData();
+		LoadDataToStaging load = new LoadDataToStaging();
 		load.loadData();
 		System.out.println("finish");
 	}

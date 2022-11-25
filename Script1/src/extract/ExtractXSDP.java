@@ -143,7 +143,7 @@ public class ExtractXSDP {
 
 	public boolean saveCSV(String content, String dest) throws IOException {
 		if (content.length() != 0) {
-			FileWriter fw = new FileWriter(dest, true);
+			FileWriter fw = new FileWriter(dest);
 			PrintWriter pw = new PrintWriter(fw);
 			pw.write(content);
 			pw.flush();
@@ -264,15 +264,14 @@ public class ExtractXSDP {
 	}
 
 	public static void main(String[] args) {
-//		MyDate start = new MyDate(10, 9, 2022);
-//		MyDate end = new MyDate(25, 10, 2022);
+		MyDate start = new MyDate(1, 11, 2022);
+		MyDate end = new MyDate(25, 11, 2022);
 //		MyDate yesterday = new MyDate(25, 10, 2022);
 		ExtractXSDP c = new ExtractXSDP();
 		MyDate today = new MyDate();
 //		c.crawlToday();
-		c.crawl(today.previousDay());
-//		c.crawl(start, end);
-
+//		c.crawl(today.previousDay());
+		c.crawl(start, end);
 		JOptionPane.showMessageDialog(null, "Finish");
 	}
 }
