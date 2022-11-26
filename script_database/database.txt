@@ -112,7 +112,7 @@ CREATE TABLE LOTTERY(
      expried_date date DEFAULT '9999/12/31'
 );
 CREATE TABLE RESULT(
-     id_lot varchar(100),
+     id_lot int,
      id_pri int,
      result varchar(255),
      is_delete varchar(5) DEFAULT 'FALSE',
