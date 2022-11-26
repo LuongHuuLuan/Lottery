@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,12 +15,13 @@ import model.Prize;
 import model.Result;
 
 public class ResultDAO {
-	public static void addResult(Result result, Database database) {
+	public static int addResult(Result result, Database database) {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			String sql;
+			int id = -1;
 			if (database == Database.Staging) {
 				connection = ConnectStaging.getInstance().getConnection();
 				sql = "INSERT INTO result(id_lot, id_pri, result) values(?,?,?)";
@@ -28,7 +30,7 @@ public class ResultDAO {
 				sql = "INSERT INTO result(id_lot, id_pri, result) values(?,?,?)";
 			}
 			connection.setAutoCommit(false);
-			ps = connection.prepareStatement(sql);
+			ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			if (database == Database.Staging) {
 				ps.setString(1, result.getLottery().getNkIdLot());
 				ps.setInt(2, result.getPrize().getIdPri());
@@ -39,7 +41,12 @@ public class ResultDAO {
 				ps.setString(3, result.getResult());
 			}
 			ps.executeUpdate();
+			rs = ps.getGeneratedKeys();
+			if (rs.next()) {
+				id = rs.getInt(1);
+			}
 			connection.commit();
+			return id;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			if (connection != null) {
@@ -61,6 +68,7 @@ public class ResultDAO {
 				e2.printStackTrace();
 			}
 		}
+		return -1;
 	}
 
 	public static Result getResult(String idLot, int idPrize, Database database) {
@@ -81,10 +89,11 @@ public class ResultDAO {
 			ps.setInt(2, idPrize);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				Lottery lottery = LotteryDAO.getLottery(rs.getString(1), database);
-				Prize prize = PrizeDAO.getPrize(rs.getInt(2), database);
-				String results = rs.getString(3);
-				return new Result(lottery, prize, results);
+				int idRe = rs.getInt(1);
+				Lottery lottery = LotteryDAO.getLottery(rs.getString(2), database);
+				Prize prize = PrizeDAO.getPrize(rs.getInt(3), database);
+				String results = rs.getString(4);
+				return new Result(idRe, lottery, prize, results);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -116,10 +125,11 @@ public class ResultDAO {
 			ps.setString(1, nkIdLot);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				Lottery lottery = LotteryDAO.getLottery(rs.getString(1), Database.Staging);
-				Prize prize = PrizeDAO.getPrize(rs.getInt(2), Database.Staging);
-				String res = rs.getString(3);
-				Result result = new Result(lottery, prize, res);
+				int idRe = rs.getInt(1);
+				Lottery lottery = LotteryDAO.getLottery(rs.getString(2), Database.Staging);
+				Prize prize = PrizeDAO.getPrize(rs.getInt(3), Database.Staging);
+				String res = rs.getString(4);
+				Result result = new Result(idRe, lottery, prize, res);
 				results.add(result);
 			}
 			return results;
