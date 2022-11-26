@@ -99,7 +99,7 @@ public class LoadDataToDw {
 				lottery.getProvince().setIdPro(idPro);
 			}
 			if (lottery.getDate().getIdDate() != idDate) {
-				lottery.getDate().setDate(idDate);
+				lottery.getDate().setIdDate(idDate);
 			}
 			int idLot = LotteryDAO.addLottery(lottery, Database.DataWerehouse);
 			lottery.setIdLot(idLot);

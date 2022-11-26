@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import connection.ConnectStaging;
 import model.Lottery;
@@ -11,20 +12,26 @@ import model.Prize;
 import model.Result;
 
 public class ResultDAO {
-	public static void addResult(Result result) {
+	public static int addResult(Result result) {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
+			int id = -1;
 			connection = ConnectStaging.getInstance().getConnection();
 			connection.setAutoCommit(false);
 			String sql = "INSERT INTO result(id_lot, id_pri, result) values(?,?,?)";
-			ps = connection.prepareStatement(sql);
+			ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, result.getLottery().getIdLot());
 			ps.setInt(2, result.getPrize().getIdPri());
 			ps.setString(3, result.getResult());
 			ps.executeUpdate();
+			rs = ps.getGeneratedKeys();
+			if (rs.next()) {
+				id = rs.getInt(1);
+			}
 			connection.commit();
+			return id;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			if (connection != null) {
@@ -46,6 +53,7 @@ public class ResultDAO {
 				e2.printStackTrace();
 			}
 		}
+		return -1;
 	}
 
 	public static Result getResult(String idLot, int idPrize) {
@@ -60,10 +68,11 @@ public class ResultDAO {
 			ps.setInt(2, idPrize);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				Lottery lottery = LotteryDAO.getLottery(rs.getString(1));
-				Prize prize = PrizeDAO.getPrize(rs.getInt(2));
-				String results = rs.getString(3);
-				return new Result(lottery, prize, results);
+				int idRe = rs.getInt(1);
+				Lottery lottery = LotteryDAO.getLottery(rs.getString(2));
+				Prize prize = PrizeDAO.getPrize(rs.getInt(3));
+				String results = rs.getString(4);
+				return new Result(idRe, lottery, prize, results);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

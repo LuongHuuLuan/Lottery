@@ -264,7 +264,7 @@ public class ExtractXSDP {
 	}
 
 	public static void main(String[] args) {
-		MyDate start = new MyDate(2, 11, 2022);
+		MyDate start = new MyDate(3, 11, 2022);
 		MyDate end = new MyDate(25, 11, 2022);
 //		MyDate yesterday = new MyDate(25, 10, 2022);
 		ExtractXSDP c = new ExtractXSDP();
@@ -272,7 +272,7 @@ public class ExtractXSDP {
 //		c.crawlToday();
 //		c.crawl(today.previousDay());
 		c.crawl(start, end);
-//		c.crawl(new MyDate(1, 11, 2022));
+//		c.crawl(new MyDate(2, 11, 2022));
 		JOptionPane.showMessageDialog(null, "Finish");
 	}
 }

@@ -9,19 +9,21 @@ CREATE TABLE FILE_CONFIGURATION(
     user varchar(50),
     pass varchar(50)
 );
+CREATE TABLE CONTACT(
+    id int primary key auto_increment,
+    student_code varchar(10),
+    full_name varchar(50),
+    email varchar(50)
+);
 CREATE TABLE FILE_LOG(
     id int primary key auto_increment,
     id_config int,
     file_name varchar(50),
     date datetime,
     state varchar(10),
-    contact int
-);
-CREATE TABLE CONTACT(
-    id int primary key auto_increment,
-    student_code varchar(10),
-    full_name varchar(50),
-    email varchar(50)
+    contact int ,
+    foreign key (id_config) references FILE_CONFIGURATION(id),
+    foreign key (contact) references CONTACT(id)
 );
 
 
@@ -64,13 +66,19 @@ CREATE TABLE PRIZE_DIM(
 CREATE TABLE LOTTERY(
      id_lot varchar(100) primary key,
      id_date int,
-     id_sour int,
-     id_pro int
+     id_sour int ,
+     id_pro int ,
+     foreign key (id_date) references DATE_DIM(id_date),
+     foreign key (id_sour) references SOURCE_DIM(id_sour),
+     foreign key (id_pro) references PROVINCE_DIM(id_pro)
 );
 CREATE TABLE RESULT(
+     id_re int primary key auto_increment,
      id_lot varchar(100),
      id_pri int,
-     result varchar(255)
+     result varchar(255),
+     foreign key (id_lot) references LOTTERY(id_lot),
+     foreign key (id_pri) references PRIZE_DIM(id_pri)
 );
 
 #END DB STAGING
@@ -109,15 +117,21 @@ CREATE TABLE LOTTERY(
      id_pro int,
      is_delete varchar(5) DEFAULT 'FALSE',
      update_date date DEFAULT CURRENT_TIMESTAMP,
-     expried_date date DEFAULT '9999/12/31'
+     expried_date date DEFAULT '9999/12/31',
+     foreign key (id_date) references DATE_DIM(id_date),
+     foreign key (id_sour) references SOURCE_DIM(id_sour),
+     foreign key (id_pro) references PROVINCE_DIM(id_pro)
 );
 CREATE TABLE RESULT(
-     id_lot int,
+     id_re int primary key auto_increment,
+     id_lot int ,
      id_pri int,
      result varchar(255),
      is_delete varchar(5) DEFAULT 'FALSE',
      update_date date DEFAULT CURRENT_TIMESTAMP,
-     expried_date date DEFAULT '9999/12/31'
+     expried_date date DEFAULT '9999/12/31',
+     foreign key (id_lot) references LOTTERY(id_lot),
+     foreign key (id_pri) references PRIZE_DIM(id_pri)
 );
 
 # END DB DW
