@@ -101,7 +101,8 @@ public class LoadDataToDw {
 			if (lottery.getDate().getIdDate() != idDate) {
 				lottery.getDate().setDate(idDate);
 			}
-			LotteryDAO.addLottery(lottery, Database.DataWerehouse);
+			int idLot = LotteryDAO.addLottery(lottery, Database.DataWerehouse);
+			lottery.setIdLot(idLot);
 		} else {
 			lottery = lotteryInDw;
 		}

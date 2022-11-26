@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,11 +16,12 @@ import model.Province;
 import model.Source;
 
 public class LotteryDAO {
-	public static void addLottery(Lottery lottery, Database database) {
+	public static int addLottery(Lottery lottery, Database database) {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
+			int id = -1;
 			String sql;
 			if (database == Database.Staging) {
 				connection = ConnectStaging.getInstance().getConnection();
@@ -29,13 +31,18 @@ public class LotteryDAO {
 				sql = "INSERT INTO lottery(nk_id_lot, id_date, id_sour, id_pro) values(?,?,?,?)";
 			}
 			connection.setAutoCommit(false);
-			ps = connection.prepareStatement(sql);
+			ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, lottery.getNkIdLot());
 			ps.setInt(2, lottery.getDate().getIdDate());
 			ps.setInt(3, lottery.getSource().getIdSour());
 			ps.setInt(4, lottery.getProvince().getIdPro());
 			ps.executeUpdate();
+			rs = ps.getGeneratedKeys();
+			if (rs.next()) {
+				id = rs.getInt(1);
+			}
 			connection.commit();
+			return id;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			if (connection != null) {
@@ -57,6 +64,7 @@ public class LotteryDAO {
 				e2.printStackTrace();
 			}
 		}
+		return -1;
 	}
 
 	public static List<Lottery> getAllLotteriesFromStaging() {

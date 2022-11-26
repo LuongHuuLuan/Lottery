@@ -29,9 +29,15 @@ public class ResultDAO {
 			}
 			connection.setAutoCommit(false);
 			ps = connection.prepareStatement(sql);
-			ps.setString(1, result.getLottery().getNkIdLot());
-			ps.setInt(2, result.getPrize().getIdPri());
-			ps.setString(3, result.getResult());
+			if (database == Database.Staging) {
+				ps.setString(1, result.getLottery().getNkIdLot());
+				ps.setInt(2, result.getPrize().getIdPri());
+				ps.setString(3, result.getResult());
+			} else {
+				ps.setInt(1, result.getLottery().getIdLot());
+				ps.setInt(2, result.getPrize().getIdPri());
+				ps.setString(3, result.getResult());
+			}
 			ps.executeUpdate();
 			connection.commit();
 		} catch (SQLException e) {

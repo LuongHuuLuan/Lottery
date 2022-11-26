@@ -189,7 +189,7 @@ public class ExtractXSDP {
 //				get data from source
 //				String data = src.substring(src.indexOf("//") + 2, src.indexOf(".")) + "\n" + url + "\n"
 //						+ "Tỉnh,Ngày,Giải 8,Giải 7,Giải 6,Giải 5,Giải 4,Giải 3,Giải 2,Giải 1,Giải ĐB\n";
-				String data ="Tỉnh,Ngày,Giải 8,Giải 7,Giải 6,Giải 5,Giải 4,Giải 3,Giải 2,Giải 1,Giải ĐB\n";
+				String data = "Tỉnh,Ngày,Giải 8,Giải 7,Giải 6,Giải 5,Giải 4,Giải 3,Giải 2,Giải 1,Giải ĐB\n";
 				data += crawling(url);
 				if (data.trim().length() != 0) {
 //					has data
@@ -236,7 +236,7 @@ public class ExtractXSDP {
 //				get data from source
 //				String data = src.substring(src.indexOf("//") + 2, src.indexOf(".")) + "\n" + url + "\n"
 //						+ "Tỉnh,Ngày,Giải 8,Giải 7,Giải 6,Giải 5,Giải 4,Giải 3,Giải 2,Giải 1,Giải ĐB\n";
-				String data ="Tỉnh,Ngày,Giải 8,Giải 7,Giải 6,Giải 5,Giải 4,Giải 3,Giải 2,Giải 1,Giải ĐB\n";
+				String data = "Tỉnh,Ngày,Giải 8,Giải 7,Giải 6,Giải 5,Giải 4,Giải 3,Giải 2,Giải 1,Giải ĐB\n";
 				data += crawling(url);
 				if (data.trim().length() != 0) {
 //					has data
@@ -264,14 +264,15 @@ public class ExtractXSDP {
 	}
 
 	public static void main(String[] args) {
-		MyDate start = new MyDate(1, 11, 2022);
+		MyDate start = new MyDate(2, 11, 2022);
 		MyDate end = new MyDate(25, 11, 2022);
 //		MyDate yesterday = new MyDate(25, 10, 2022);
 		ExtractXSDP c = new ExtractXSDP();
-		MyDate today = new MyDate();
+//		MyDate today = new MyDate();
 //		c.crawlToday();
 //		c.crawl(today.previousDay());
 		c.crawl(start, end);
+//		c.crawl(new MyDate(1, 11, 2022));
 		JOptionPane.showMessageDialog(null, "Finish");
 	}
 }
