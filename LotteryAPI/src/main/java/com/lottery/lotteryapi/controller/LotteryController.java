@@ -16,9 +16,9 @@ public class LotteryController {
     @Autowired
     private LotteryService lotteryService;
 
-    @GetMapping("")
-    public ResponseEntity<List<LotteryDTO>> getTodayLottery() {
-        List<LotteryDTO> results = lotteryService.getTodayLottery();
+    @GetMapping
+    public ResponseEntity<List<LotteryDTO>> getLotteriesToday() {
+        List<LotteryDTO> results = lotteryService.getLotteriesToday();
         if (results.size() != 0) {
             return new ResponseEntity<>(results, HttpStatus.OK);
         } else {
@@ -27,12 +27,13 @@ public class LotteryController {
     }
 
     @GetMapping("/{date}")
-    public ResponseEntity<List<LotteryDTO>> getTest(@PathVariable String date) {
-        List<LotteryDTO> results = lotteryService.getLottery(date);
+    public ResponseEntity<List<LotteryDTO>> getLotteryByDate(@PathVariable String date) {
+        List<LotteryDTO> results = lotteryService.getLotteries(date);
         if (results.size() != 0) {
             return new ResponseEntity<>(results, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
+
 }
