@@ -129,7 +129,7 @@ public class LotteryDAO {
 				} else {
 					int idLot = rs.getInt("id_lot");
 					String nkIdLot = rs.getString("nk_id_lot");
-					Date date = DateDAO.getDate(rs.getInt("date"), database);
+					Date date = DateDAO.getDate(rs.getInt("id_date"), database);
 					Source source = SourceDAO.getSource(rs.getInt("id_sour"), database);
 					Province province = ProvinceDAO.getProvince(rs.getInt("id_pro"), database);
 					return new Lottery(idLot, nkIdLot, date, source, province);

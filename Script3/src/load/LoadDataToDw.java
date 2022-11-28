@@ -135,7 +135,7 @@ public class LoadDataToDw {
 		for (FileLog log : logs) {
 			LogDAO.setLogState(log.getId(), "TR");
 		}
-//		StagingDAO.deleteDateStaging();
+		StagingDAO.deleteDateStaging();
 	}
 
 	public static void main(String[] args) {
