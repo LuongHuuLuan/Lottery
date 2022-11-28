@@ -75,7 +75,7 @@ public class PrizeDAO {
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				return new Prize(rs.getInt(1), rs.getString(2), rs.getDouble(3));
+				return new Prize(rs.getInt("id_pri"), rs.getString("name"), rs.getDouble("prize"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -110,7 +110,7 @@ public class PrizeDAO {
 			ps.setString(1, name);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				return new Prize(rs.getInt(1), rs.getString(2), rs.getDouble(3));
+				return new Prize(rs.getInt("id_pri"), rs.getString("name"), rs.getDouble("prize"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -141,7 +141,7 @@ public class PrizeDAO {
 			ps = connection.prepareStatement(sql);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				Prize prize = new Prize(rs.getInt(1), rs.getString(2), rs.getDouble(3));
+				Prize prize = new Prize(rs.getInt("id_pri"), rs.getString("name"), rs.getDouble("prize"));
 				prizes.add(prize);
 			}
 			return prizes;

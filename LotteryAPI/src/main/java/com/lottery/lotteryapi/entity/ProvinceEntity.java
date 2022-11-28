@@ -1,16 +1,23 @@
 package com.lottery.lotteryapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "province_dim")
-public class Province {
+public class ProvinceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
+    @Column(name = "id_pro")
     private int idPro;
     @Column
     private String name;
+
+    @OneToMany(mappedBy = "province", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<LotteryEntity> lotteries;
 
     public int getIdPro() {
         return idPro;
@@ -26,5 +33,13 @@ public class Province {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<LotteryEntity> getLotteries() {
+        return lotteries;
+    }
+
+    public void setLotteries(List<LotteryEntity> lotteries) {
+        this.lotteries = lotteries;
     }
 }

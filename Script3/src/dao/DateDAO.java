@@ -80,12 +80,12 @@ public class DateDAO {
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				int idDate = rs.getInt(1);
-				String fullDate = rs.getString(2);
-				String day = rs.getString(3);
-				int date = rs.getInt(4);
-				int month = rs.getInt(5);
-				int year = rs.getInt(6);
+				int idDate = rs.getInt("id_date");
+				String fullDate = rs.getString("full_date");
+				String day = rs.getString("day");
+				int date = rs.getInt("date");
+				int month = rs.getInt("month");
+				int year = rs.getInt("year");
 				return new Date(idDate, fullDate, day, date, month, year);
 			}
 		} catch (SQLException e) {
@@ -121,12 +121,12 @@ public class DateDAO {
 			ps.setString(1, fullDate);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				int idDate = rs.getInt(1);
-				String fullD = rs.getString(2);
-				String day = rs.getString(3);
-				int date = rs.getInt(4);
-				int month = rs.getInt(5);
-				int year = rs.getInt(6);
+				int idDate = rs.getInt("id_date");
+				String fullD = rs.getString("full_date");
+				String day = rs.getString("day");
+				int date = rs.getInt("date");
+				int month = rs.getInt("month");
+				int year = rs.getInt("year");
 				return new Date(idDate, fullD, day, date, month, year);
 			}
 		} catch (SQLException e) {

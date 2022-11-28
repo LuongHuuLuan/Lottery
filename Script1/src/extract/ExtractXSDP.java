@@ -264,8 +264,8 @@ public class ExtractXSDP {
 	}
 
 	public static void main(String[] args) {
-		MyDate start = new MyDate(3, 11, 2022);
-		MyDate end = new MyDate(25, 11, 2022);
+		MyDate start = new MyDate(1, 11, 2022);
+		MyDate end = new MyDate(28, 11, 2022);
 //		MyDate yesterday = new MyDate(25, 10, 2022);
 		ExtractXSDP c = new ExtractXSDP();
 //		MyDate today = new MyDate();

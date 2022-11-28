@@ -77,7 +77,7 @@ public class SourceDAO {
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				return new Source(rs.getInt(1), rs.getString(2), rs.getString(3));
+				return new Source(rs.getInt("id_sour"), rs.getString("name"), rs.getString("url"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -113,7 +113,7 @@ public class SourceDAO {
 			ps.setString(2, url);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				return new Source(rs.getInt(1), rs.getString(2), rs.getString(3));
+				return new Source(rs.getInt("id_sour"), rs.getString("name"), rs.getString("url"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -149,7 +149,7 @@ public class SourceDAO {
 			ps.setString(1, name);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				return new Source(rs.getInt(1), rs.getString(2), rs.getString(3));
+				return new Source(rs.getInt("id_sour"), rs.getString("name"), rs.getString("url"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
