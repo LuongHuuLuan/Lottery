@@ -3,3 +3,30 @@
     background-color: #13CD70;
     padding: 20px 10px;
 }
+#head_2{
+    overflow: hidden;
+    padding: 20px 10px;
+}
+#head_3{
+    overflow: hidden;
+    font-weight: bold;
+    color: aliceblue;
+    background-color: #13CD70;
+    padding: 20px 10px;
+}
+#head_4{
+    overflow: hidden;
+    color: #13CD70;
+    font-weight: bold;
+    padding: 20px 10px;
+}
+#BoDy_Left{
+    float: left;
+    width: 65%;
+
+}
+#BoDy_Right{
+    float: left;
+    width: 30%;
+    
+}
