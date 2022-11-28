@@ -89,10 +89,10 @@ public class ResultDAO {
 			ps.setInt(2, idPrize);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				int idRe = rs.getInt(1);
-				Lottery lottery = LotteryDAO.getLottery(rs.getString(2), database);
-				Prize prize = PrizeDAO.getPrize(rs.getInt(3), database);
-				String results = rs.getString(4);
+				int idRe = rs.getInt("id_re");
+				Lottery lottery = LotteryDAO.getLottery(rs.getString("id_lot"), database);
+				Prize prize = PrizeDAO.getPrize(rs.getInt("id_pri"), database);
+				String results = rs.getString("result");
 				return new Result(idRe, lottery, prize, results);
 			}
 		} catch (SQLException e) {

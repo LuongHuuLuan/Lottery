@@ -1,13 +1,16 @@
 package com.lottery.lotteryapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "date_dim")
-public class Date {
+public class DateEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
+    @Column(name = "id_date")
     private int idDate;
     @Column
     private String fullDate;
@@ -19,6 +22,10 @@ public class Date {
     private int month;
     @Column
     private int year;
+
+    @OneToMany(mappedBy = "date", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<LotteryEntity> lotteries;
 
     public int getIdDate() {
         return idDate;
@@ -66,5 +73,13 @@ public class Date {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    public List<LotteryEntity> getLotteries() {
+        return lotteries;
+    }
+
+    public void setLotteries(List<LotteryEntity> lotteries) {
+        this.lotteries = lotteries;
     }
 }

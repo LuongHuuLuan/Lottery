@@ -72,7 +72,7 @@ public class ProvinceDAO {
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				return new Province(rs.getInt(1), rs.getString(2));
+				return new Province(rs.getInt("id_pro"), rs.getString("name"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -107,7 +107,7 @@ public class ProvinceDAO {
 			ps.setString(1, name);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				return new Province(rs.getInt(1), rs.getString(2));
+				return new Province(rs.getInt("id_pro"), rs.getString("name"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
