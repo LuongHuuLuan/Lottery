@@ -30,3 +30,18 @@
     width: 30%;
     
 }
+#Body_Right_Top{
+    border-width:2px;
+border-style:solid;
+border-color:black;
+
+}
+#Body_Right_Bot{
+    border-width:2px;
+border-style:solid;
+border-color:black;
+
+}
+.h2{
+    font-weight: bold;
+}
