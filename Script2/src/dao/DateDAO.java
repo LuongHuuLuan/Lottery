@@ -18,13 +18,14 @@ public class DateDAO {
 			int id = -1;
 			connection = ConnectStaging.getInstance().getConnection();
 			connection.setAutoCommit(false);
-			String sql = "INSERT INTO date_dim(full_date, day, date, month, year) values(?,?,?,?,?)";
+			String sql = "INSERT INTO date_dim(full_date, short_date, day, date, month, year) values(?,?,?,?,?,?)";
 			ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, date.getFullDate());
-			ps.setString(2, date.getDay());
-			ps.setInt(3, date.getDate());
-			ps.setInt(4, date.getMonth());
-			ps.setInt(5, date.getYear());
+			ps.setString(2, date.getShortDate());
+			ps.setString(3, date.getDay());
+			ps.setInt(4, date.getDate());
+			ps.setInt(5, date.getMonth());
+			ps.setInt(6, date.getYear());
 			ps.executeUpdate();
 			rs = ps.getGeneratedKeys();
 			if (rs.next()) {
@@ -67,13 +68,14 @@ public class DateDAO {
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				int idDate = rs.getInt(1);
-				String fullDate = rs.getString(2);
-				String day = rs.getString(3);
-				int date = rs.getInt(4);
-				int month = rs.getInt(5);
-				int year = rs.getInt(6);
-				return new Date(idDate, fullDate, day, date, month, year);
+				int idDate = rs.getInt("id_date");
+				String fullDate = rs.getString("full_date");
+				String shortDate = rs.getString("short_date");
+				String day = rs.getString("day");
+				int date = rs.getInt("date");
+				int month = rs.getInt("month");
+				int year = rs.getInt("year");
+				return new Date(idDate, fullDate, shortDate, day, date, month, year);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -104,13 +106,14 @@ public class DateDAO {
 			ps.setString(1, fullDate);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				int idDate = rs.getInt(1);
-				String fullD = rs.getString(2);
-				String day = rs.getString(3);
-				int date = rs.getInt(4);
-				int month = rs.getInt(5);
-				int year = rs.getInt(6);
-				return new Date(idDate, fullD, day, date, month, year);
+				int idDate = rs.getInt("id_date");
+				String fullD = rs.getString("full_date");
+				String shortDate = rs.getString("short_date");
+				String day = rs.getString("day");
+				int date = rs.getInt("date");
+				int month = rs.getInt("month");
+				int year = rs.getInt("year");
+				return new Date(idDate, fullD, shortDate, day, date, month, year);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

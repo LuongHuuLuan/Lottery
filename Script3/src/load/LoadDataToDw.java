@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import dao.Database;
 import dao.DateDAO;
 import dao.LogDAO;
@@ -120,7 +122,6 @@ public class LoadDataToDw {
 	}
 
 	public void loadDataToDw() {
-		System.out.println("Load");
 		List<FileLog> logs = LogDAO.getAllStaging();
 		if (logs.size() != 0) {
 			List<Lottery> lotteries = LotteryDAO.getAllLotteriesFromStaging();
@@ -139,8 +140,10 @@ public class LoadDataToDw {
 	}
 
 	public static void main(String[] args) {
+		System.out.println("Loading...");
 		LoadDataToDw load = new LoadDataToDw();
 		load.loadDataToDw();
 		System.out.println("finish");
+//		JOptionPane.showMessageDialog(null, "Finish");
 	}
 }

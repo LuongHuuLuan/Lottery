@@ -1,9 +1,11 @@
 package model;
 
 public class Config {
-	private int idConfig;
-	private String source;
-	private String sourceLocal;
+	private int id;
+	private String sourceCode;
+	private String sourceName;
+	private String sourceUrl;
+	private String localStogrePath;
 	private String ftp;
 	private String userName;
 	private String password;
@@ -12,37 +14,56 @@ public class Config {
 
 	}
 
-	public Config(int idConfig, String source, String sourceLocal, String ftp, String userName, String password) {
-		this.idConfig = idConfig;
-		this.source = source;
-		this.sourceLocal = sourceLocal;
+	public Config(int id, String sourceCode, String sourceName, String sourceUrl, String localStogrePath, String ftp,
+			String userName, String password) {
+		this.id = id;
+		this.sourceCode = sourceCode;
+		this.sourceName = sourceName;
+		this.sourceUrl = sourceUrl;
+		this.localStogrePath = localStogrePath;
 		this.ftp = ftp;
 		this.userName = userName;
 		this.password = password;
 	}
 
-	public int getIdConfig() {
-		return idConfig;
+	public int getId() {
+		return id;
 	}
 
-	public void setIdConfig(int idConfig) {
-		this.idConfig = idConfig;
+	public void setId(int id) {
+		this.id = id;
 	}
 
-	public String getSource() {
-		return source;
+	public String getSourceCode() {
+		return sourceCode;
 	}
 
-	public void setSource(String source) {
-		this.source = source;
+	public void setSourceCode(String sourceCode) {
+		this.sourceCode = sourceCode;
 	}
 
-	public String getSourceLocal() {
-		return sourceLocal;
+	public String getSourceName() {
+		return sourceName;
 	}
 
-	public void setSourceLocal(String sourceLocal) {
-		this.sourceLocal = sourceLocal;
+	public void setSourceName(String sourceName) {
+		this.sourceName = sourceName;
+	}
+
+	public String getSourceUrl() {
+		return sourceUrl;
+	}
+
+	public void setSourceUrl(String sourceUrl) {
+		this.sourceUrl = sourceUrl;
+	}
+
+	public String getLocalStogrePath() {
+		return localStogrePath;
+	}
+
+	public void setLocalStogrePath(String localStogrePath) {
+		this.localStogrePath = localStogrePath;
 	}
 
 	public String getFtp() {
@@ -68,5 +89,4 @@ public class Config {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
 }

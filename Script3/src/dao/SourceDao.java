@@ -26,10 +26,11 @@ public class SourceDAO {
 			}
 
 			connection.setAutoCommit(false);
-			String sql = "INSERT INTO source_dim(name, url) values(?,?)";
+			String sql = "INSERT INTO source_dim(code_sour, name, url) values(?,?,?)";
 			ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			ps.setString(1, source.getName());
-			ps.setString(2, source.getUrl());
+			ps.setString(1, source.getCodeSour());
+			ps.setString(2, source.getName());
+			ps.setString(3, source.getUrl());
 			ps.executeUpdate();
 			rs = ps.getGeneratedKeys();
 			if (rs.next()) {
@@ -72,12 +73,16 @@ public class SourceDAO {
 				connection = ConnectDW.getInstance().getConnection();
 			}
 
-			String sql = "SELECT id_sour, name, url from source_dim where id_sour = ?";
+			String sql = "SELECT id_sour, code_sour, name, url from source_dim where id_sour = ?";
 			ps = connection.prepareStatement(sql);
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				return new Source(rs.getInt("id_sour"), rs.getString("name"), rs.getString("url"));
+				int idSour = rs.getInt("id_sour");
+				String codeSour = rs.getString("code_sour");
+				String name = rs.getString("name");
+				String url = rs.getString("url");
+				return new Source(idSour, codeSour, name, url);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -106,14 +111,16 @@ public class SourceDAO {
 			} else {
 				connection = ConnectDW.getInstance().getConnection();
 			}
-			
-			String sql = "SELECT id_sour, name, url from source_dim where name = ? and url = ?";
+
+			String sql = "SELECT id_sour, code_sour, name, url from source_dim where name = ? and url = ?";
 			ps = connection.prepareStatement(sql);
 			ps.setString(1, name);
 			ps.setString(2, url);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				return new Source(rs.getInt("id_sour"), rs.getString("name"), rs.getString("url"));
+				int idSour = rs.getInt("id_sour");
+				String codeSour = rs.getString("code_sour");
+				return new Source(idSour, codeSour, name, url);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -137,19 +144,22 @@ public class SourceDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			
+
 			if (database == Database.Staging) {
 				connection = ConnectStaging.getInstance().getConnection();
 			} else {
 				connection = ConnectDW.getInstance().getConnection();
 			}
-			
-			String sql = "SELECT id_sour, name, url from source_dim where name = ?";
+
+			String sql = "SELECT id_sour,code_sour, name, url from source_dim where name = ?";
 			ps = connection.prepareStatement(sql);
 			ps.setString(1, name);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				return new Source(rs.getInt("id_sour"), rs.getString("name"), rs.getString("url"));
+				int idSour = rs.getInt("id_sour");
+				String codeSour = rs.getString("code_sour");
+				String url = rs.getString("url");
+				return new Source(idSour, codeSour, name, url);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

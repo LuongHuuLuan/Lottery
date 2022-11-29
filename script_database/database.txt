@@ -3,8 +3,10 @@ CREATE DATABASE CONTROL_LOTTERY CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 USE CONTROL_LOTTERY;
 CREATE TABLE FILE_CONFIGURATION(
     id int primary key auto_increment,
-    source varchar(50),
-    source_local varchar(50),
+    source_code varchar(50),
+    source_name varchar(50),
+    source_url varchar(255),
+    local_stogre_path varchar(255),
     ftp varchar(50),
     user varchar(50),
     pass varchar(50)
@@ -28,7 +30,7 @@ CREATE TABLE FILE_LOG(
 
 
 #insert to config
-insert into FILE_CONFIGURATION(source, source_local, ftp, user, pass) values('https://xosodaiphat.com/xsmn-xo-so-mien-nam.html', 'E:\\GocHocTap\\eclipse\\Lottery\\output', 'ftp://','luan', 'luan');
+insert into FILE_CONFIGURATION(source_code, source_name, source_url, local_stogre_path, ftp, user, pass) values('xosodaiphat' ,'Xổ số Đại Phát', 'https://xosodaiphat.com/xsmn-xo-so-mien-nam.html', 'E:\\GocHocTap\\eclipse\\Lottery\\output', 'ftp://','luan', 'luan');
 
 #insert to contact
 insert into CONTACT(student_code, full_name, email) values('19130131', 'Luong Huu Luan', '19130131@st.hcmuaf.edu.vn');
@@ -43,12 +45,14 @@ USE STAGING_LOTTERY;
 
 CREATE TABLE SOURCE_DIM(
     id_sour int primary key auto_increment,
+    code_sour varchar(50),
     name varchar(50),
     url varchar(255)
 );
 CREATE TABLE DATE_DIM(
      id_date int primary key auto_increment,
      full_date varchar(50),
+     short_date varchar(50),
      day varchar(20),
      date int,
      month int,
@@ -56,10 +60,12 @@ CREATE TABLE DATE_DIM(
 );
 CREATE TABLE PROVINCE_DIM(
     id_pro int primary key auto_increment,
+    code_pro varchar(50),
     name varchar(50)
 );
 CREATE TABLE PRIZE_DIM(
      id_pri int primary key auto_increment,
+     code_pri varchar(50),
      name varchar(50),
      prize double
 );
@@ -89,12 +95,14 @@ USE DW_LOTTERY;
 
 CREATE TABLE SOURCE_DIM(
     id_sour int primary key auto_increment,
+    code_sour varchar(50),
     name varchar(50),
     url varchar(255)
 );
 CREATE TABLE DATE_DIM(
      id_date int primary key auto_increment,
      full_date varchar(50),
+     short_date varchar(50),
      day varchar(20),
      date int,
      month int,
@@ -102,10 +110,12 @@ CREATE TABLE DATE_DIM(
 );
 CREATE TABLE PROVINCE_DIM(
     id_pro int primary key auto_increment,
+    code_pro varchar(50),
     name varchar(50)
 );
 CREATE TABLE PRIZE_DIM(
      id_pri int primary key auto_increment,
+     code_pri varchar(50),
      name varchar(50),
      prize double
 );

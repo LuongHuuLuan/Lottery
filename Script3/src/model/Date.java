@@ -3,6 +3,7 @@ package model;
 public class Date {
 	private int idDate;
 	private String fullDate;
+	private String shortDate;
 	private String day;
 	private int date;
 	private int month;
@@ -11,9 +12,10 @@ public class Date {
 	public Date() {
 	}
 
-	public Date(int idDate, String fullDate, String day, int date, int month, int year) {
+	public Date(int idDate, String fullDate, String shortDate, String day, int date, int month, int year) {
 		this.idDate = idDate;
 		this.fullDate = fullDate;
+		this.shortDate = shortDate;
 		this.day = day;
 		this.date = date;
 		this.month = month;
@@ -34,6 +36,14 @@ public class Date {
 
 	public void setFullDate(String fullDate) {
 		this.fullDate = fullDate;
+	}
+
+	public String getShortDate() {
+		return shortDate;
+	}
+
+	public void setShortDate(String shortDate) {
+		this.shortDate = shortDate;
 	}
 
 	public String getDay() {

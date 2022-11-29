@@ -13,6 +13,8 @@ public class PrizeEntity {
     @Column(name = "id_pri")
     private int idPri;
     @Column
+    private String codePri;
+    @Column
     private String name;
     @Column
     private double prize;
@@ -27,6 +29,14 @@ public class PrizeEntity {
 
     public void setIdPri(int idPri) {
         this.idPri = idPri;
+    }
+
+    public String getCodePri() {
+        return codePri;
+    }
+
+    public void setCodePri(String codePri) {
+        this.codePri = codePri;
     }
 
     public String getName() {

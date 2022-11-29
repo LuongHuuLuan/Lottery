@@ -18,9 +18,10 @@ public class ProvinceDAO {
 			int id = -1;
 			connection = ConnectStaging.getInstance().getConnection();
 			connection.setAutoCommit(false);
-			String sql = "INSERT INTO province_dim(name) values(?)";
+			String sql = "INSERT INTO province_dim(code_pro, name) values(?,?)";
 			ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			ps.setString(1, province.getName());
+			ps.setString(1, province.getCodePro());
+			ps.setString(2, province.getName());
 			ps.executeUpdate();
 			rs = ps.getGeneratedKeys();
 			if (rs.next()) {
@@ -58,12 +59,14 @@ public class ProvinceDAO {
 		ResultSet rs = null;
 		try {
 			connection = ConnectStaging.getInstance().getConnection();
-			String sql = "SELECT id_pro, name from province_dim where id_pro = ?";
+			String sql = "SELECT id_pro, code_pro, name from province_dim where id_pro = ?";
 			ps = connection.prepareStatement(sql);
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				return new Province(rs.getInt(1), rs.getString(2));
+				String codePro = rs.getString("code_pro");
+				String name = rs.getString("name");
+				return new Province(id, codePro, name);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -89,12 +92,14 @@ public class ProvinceDAO {
 		ResultSet rs = null;
 		try {
 			connection = ConnectStaging.getInstance().getConnection();
-			String sql = "SELECT id_pro, name from province_dim where name = ?";
+			String sql = "SELECT id_pro, code_pro, name from province_dim where name = ?";
 			ps = connection.prepareStatement(sql);
 			ps.setString(1, name);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				return new Province(rs.getInt(1), rs.getString(2));
+				int idPro = rs.getInt("id_pro");
+				String codePro = rs.getString("code_pro");
+				return new Province(idPro, codePro, name);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

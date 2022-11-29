@@ -5,8 +5,8 @@ import com.lottery.lotteryapi.dto.ResultDTO;
 import com.lottery.lotteryapi.entity.DateEntity;
 import com.lottery.lotteryapi.entity.LotteryEntity;
 import com.lottery.lotteryapi.entity.ResultEntity;
-import com.lottery.lotteryapi.repository.DateRepository;
-import com.lottery.lotteryapi.repository.LotteryRepository;
+import com.lottery.lotteryapi.repository.IDateRepository;
+import com.lottery.lotteryapi.repository.ILotteryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +18,9 @@ import java.util.List;
 public class LotteryService {
 
     @Autowired
-    private LotteryRepository lotteryRepository;
+    private ILotteryRepository lotteryRepository;
     @Autowired
-    private DateRepository dateRepository;
+    private IDateRepository dateRepository;
 
 
     public List<LotteryDTO> getLotteriesToday() {
@@ -32,15 +32,9 @@ public class LotteryService {
     }
 
     public List<LotteryDTO> getLotteries(String date) {
-        int day;
-        int month;
-        int year;
         List<LotteryDTO> results = new ArrayList<>();
-        try {
-            day = Integer.parseInt(date.split("-")[0]);
-            month = Integer.parseInt(date.split("-")[1]);
-            year = Integer.parseInt(date.split("-")[2]);
-            DateEntity dateEntity = dateRepository.findOneByDateAndMonthAndYear(day, month, year);
+        DateEntity dateEntity = dateRepository.findOneByShortDate(date.replaceAll("-", "/"));
+        if (dateEntity != null) {
             List<LotteryEntity> lotteryEntities = lotteryRepository.findByDateAndIsDelete(dateEntity, "FALSE");
             for (LotteryEntity lotteryEntity : lotteryEntities) {
                 LotteryDTO lotteryDTO = new LotteryDTO();
@@ -55,10 +49,9 @@ public class LotteryService {
                     lotteryResults.add(resultDTO);
                 }
 
-                results.add(lotteryDTO);lotteryDTO.setResults(lotteryResults);
+                results.add(lotteryDTO);
+                lotteryDTO.setResults(lotteryResults);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return results;
     }
