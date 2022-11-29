@@ -1,6 +1,5 @@
 package com.lottery.lotteryapi.controller;
 
-import com.lottery.lotteryapi.dto.LotteryDTO;
 import com.lottery.lotteryapi.dto.PrizeDTO;
 import com.lottery.lotteryapi.service.PrizeService;
 import org.springframework.beans.factory.annotation.Autowired;

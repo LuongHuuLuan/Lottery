@@ -16,7 +16,7 @@ public class LotteryController {
     @Autowired
     private LotteryService lotteryService;
 
-    @GetMapping
+    @GetMapping("/Date")
     public ResponseEntity<List<LotteryDTO>> getLotteriesToday() {
         List<LotteryDTO> results = lotteryService.getLotteriesToday();
         if (results.size() != 0) {
@@ -26,11 +26,33 @@ public class LotteryController {
         }
     }
 
-    @GetMapping("/{date}")
+    @GetMapping("Date/{date}")
     public ResponseEntity<List<LotteryDTO>> getLotteryByDate(@PathVariable String date) {
         List<LotteryDTO> results = lotteryService.getLotteries(date);
         if (results.size() != 0) {
             return new ResponseEntity<>(results, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/Province/{provinceCode}")
+    public ResponseEntity<List<LotteryDTO>> getLotteryByProvince(@PathVariable String provinceCode) {
+        // get lottery
+        List<LotteryDTO> results = lotteryService.getLotteriesByProvince(provinceCode);
+        if (results.size() != 0) {
+            return new ResponseEntity<>(results, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("")
+    public ResponseEntity<LotteryDTO> getLotteryByProvinceAndDate(@RequestParam String province, String date) {
+        // get lottery
+        LotteryDTO result = lotteryService.getLotteryByProvinceAndDate(province, date);
+        if (result != null) {
+            return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
