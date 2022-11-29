@@ -171,7 +171,7 @@ public class ExtractXSDP {
 // 				no data
 //				get 1 row data from table file_configuration
 				Config config = ConfigDAO.getConfig(1);
-				String src = config.getSource();
+				String src = config.getSourceUrl();
 				MyDate today = new MyDate();
 				String url = src.substring(0, src.indexOf("-")) + "-" + today.toDateString() + ".html";
 				String fileName = "lottery-result_" + today.toDateString() + "_"
@@ -194,7 +194,7 @@ public class ExtractXSDP {
 				if (data.trim().length() != 0) {
 //					has data
 //					save data format csv to ftp server and local
-					saveCSV(data, config.getSourceLocal() + "/" + fileName);
+					saveCSV(data, config.getLocalStogrePath() + "/" + fileName);
 //					get last row from table file_log has status ES and update status ER
 					LogDAO.updateStateLastRow("ES", "ER");
 				} else {
@@ -216,7 +216,7 @@ public class ExtractXSDP {
 			if (LogDAO.getLastRowExtract() == null) {
 				// has data
 				Config config = ConfigDAO.getConfig(1);
-				String src = config.getSource();
+				String src = config.getSourceUrl();
 				String url = src.substring(0, src.indexOf("-")) + "-" + date.toDateString() + ".html";
 				String fileName = "lottery-result_" + date.toDateString() + "_"
 						+ src.substring(src.indexOf("//") + 2, src.indexOf(".")) + ".csv";
@@ -241,7 +241,7 @@ public class ExtractXSDP {
 				if (data.trim().length() != 0) {
 //					has data
 //					save data format csv to ftp server and local
-					saveCSV(data, config.getSourceLocal() + "/" + fileName);
+					saveCSV(data, config.getLocalStogrePath() + "/" + fileName);
 //					get last row from table file_log has status ES and update status ER
 					LogDAO.updateStateLastRow("ES", "ER");
 				} else {
@@ -264,8 +264,9 @@ public class ExtractXSDP {
 	}
 
 	public static void main(String[] args) {
+		System.out.println("Extracting...");
 		MyDate start = new MyDate(1, 11, 2022);
-		MyDate end = new MyDate(28, 11, 2022);
+		MyDate end = new MyDate(29, 11, 2022);
 //		MyDate yesterday = new MyDate(25, 10, 2022);
 		ExtractXSDP c = new ExtractXSDP();
 //		MyDate today = new MyDate();
@@ -273,6 +274,7 @@ public class ExtractXSDP {
 //		c.crawl(today.previousDay());
 		c.crawl(start, end);
 //		c.crawl(new MyDate(2, 11, 2022));
-		JOptionPane.showMessageDialog(null, "Finish");
+		System.out.println("finish");
+//		JOptionPane.showMessageDialog(null, "Finish");
 	}
 }

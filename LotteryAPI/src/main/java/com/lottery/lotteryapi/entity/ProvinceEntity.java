@@ -13,6 +13,8 @@ public class ProvinceEntity {
     @Column(name = "id_pro")
     private int idPro;
     @Column
+    private String codePro;
+    @Column
     private String name;
 
     @OneToMany(mappedBy = "province", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -25,6 +27,14 @@ public class ProvinceEntity {
 
     public void setIdPro(int idPro) {
         this.idPro = idPro;
+    }
+
+    public String getCodePro() {
+        return codePro;
+    }
+
+    public void setCodePro(String codePro) {
+        this.codePro = codePro;
     }
 
     public String getName() {

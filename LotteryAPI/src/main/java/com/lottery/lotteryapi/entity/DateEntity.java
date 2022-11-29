@@ -15,6 +15,8 @@ public class DateEntity {
     @Column
     private String fullDate;
     @Column
+    private String shortDate;
+    @Column
     private String day;
     @Column
     private int date;
@@ -41,6 +43,14 @@ public class DateEntity {
 
     public void setFullDate(String fullDate) {
         this.fullDate = fullDate;
+    }
+
+    public String getShortDate() {
+        return shortDate;
+    }
+
+    public void setShortDate(String shortDate) {
+        this.shortDate = shortDate;
     }
 
     public String getDay() {

@@ -25,10 +25,11 @@ public class PrizeDAO {
 				connection = ConnectDW.getInstance().getConnection();
 			}
 			connection.setAutoCommit(false);
-			String sql = "INSERT INTO prize_dim(name, prize) values(?,?)";
+			String sql = "INSERT INTO prize_dim(code_pri, name, prize) values(?,?,?)";
 			ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			ps.setString(1, prize.getName());
-			ps.setDouble(2, prize.getPrize());
+			ps.setString(1, prize.getCodePri());
+			ps.setString(2, prize.getName());
+			ps.setDouble(3, prize.getPrize());
 			ps.executeUpdate();
 			rs = ps.getGeneratedKeys();
 			if (rs.next()) {
@@ -75,7 +76,11 @@ public class PrizeDAO {
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				return new Prize(rs.getInt("id_pri"), rs.getString("name"), rs.getDouble("prize"));
+				int idPri = rs.getInt("id_pri");
+				String codePri = rs.getString("code_pri");
+				String name = rs.getString("name");
+				double prize = rs.getDouble("prize");
+				return new Prize(idPri, codePri, name, prize);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -110,7 +115,10 @@ public class PrizeDAO {
 			ps.setString(1, name);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				return new Prize(rs.getInt("id_pri"), rs.getString("name"), rs.getDouble("prize"));
+				int idPri = rs.getInt("id_pri");
+				String codePri = rs.getString("code_pri");
+				double prize = rs.getDouble("prize");
+				return new Prize(idPri, codePri, name, prize);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -141,8 +149,12 @@ public class PrizeDAO {
 			ps = connection.prepareStatement(sql);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				Prize prize = new Prize(rs.getInt("id_pri"), rs.getString("name"), rs.getDouble("prize"));
-				prizes.add(prize);
+				int idPri = rs.getInt("id_pri");
+				String codePri = rs.getString("code_pri");
+				String name = rs.getString("name");
+				double prize = rs.getDouble("prize");
+				Prize prizeModel = new Prize(idPri, codePri, name, prize);
+				prizes.add(prizeModel);
 			}
 			return prizes;
 		} catch (SQLException e) {

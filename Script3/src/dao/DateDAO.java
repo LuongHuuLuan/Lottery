@@ -25,13 +25,14 @@ public class DateDAO {
 			}
 
 			connection.setAutoCommit(false);
-			String sql = "INSERT INTO date_dim(full_date, day, date, month, year) values(?,?,?,?,?)";
+			String sql = "INSERT INTO date_dim(full_date, short_date, day, date, month, year) values(?,?,?,?,?,?)";
 			ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, date.getFullDate());
-			ps.setString(2, date.getDay());
-			ps.setInt(3, date.getDate());
-			ps.setInt(4, date.getMonth());
-			ps.setInt(5, date.getYear());
+			ps.setString(2, date.getShortDate());
+			ps.setString(3, date.getDay());
+			ps.setInt(4, date.getDate());
+			ps.setInt(5, date.getMonth());
+			ps.setInt(6, date.getYear());
 			ps.executeUpdate();
 			rs = ps.getGeneratedKeys();
 			if (rs.next()) {
@@ -82,11 +83,12 @@ public class DateDAO {
 			while (rs.next()) {
 				int idDate = rs.getInt("id_date");
 				String fullDate = rs.getString("full_date");
+				String shortDate = rs.getString("short_date");
 				String day = rs.getString("day");
 				int date = rs.getInt("date");
 				int month = rs.getInt("month");
 				int year = rs.getInt("year");
-				return new Date(idDate, fullDate, day, date, month, year);
+				return new Date(idDate, fullDate, shortDate, day, date, month, year);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -122,12 +124,12 @@ public class DateDAO {
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				int idDate = rs.getInt("id_date");
-				String fullD = rs.getString("full_date");
+				String shortDate = rs.getString("short_date");
 				String day = rs.getString("day");
 				int date = rs.getInt("date");
 				int month = rs.getInt("month");
 				int year = rs.getInt("year");
-				return new Date(idDate, fullD, day, date, month, year);
+				return new Date(idDate, fullDate, shortDate, day, date, month, year);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -2,14 +2,16 @@ package model;
 
 public class Prize {
 	private int idPri;
+	private String codePri;
 	private String name;
 	private double prize;
 
 	public Prize() {
 	}
 
-	public Prize(int idPri, String name, double prize) {
+	public Prize(int idPri, String codePri, String name, double prize) {
 		this.idPri = idPri;
+		this.codePri = codePri;
 		this.name = name;
 		this.prize = prize;
 	}
@@ -20,6 +22,14 @@ public class Prize {
 
 	public void setIdPro(int idPri) {
 		this.idPri = idPri;
+	}
+
+	public void setCodePri(String codePri) {
+		this.codePri = codePri;
+	}
+
+	public String getCodePri() {
+		return codePri;
 	}
 
 	public String getName() {

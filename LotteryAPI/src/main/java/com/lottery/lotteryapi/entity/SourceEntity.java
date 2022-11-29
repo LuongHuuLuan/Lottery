@@ -13,6 +13,8 @@ public class SourceEntity {
     @Column(name = "id_sour")
     private int idSour;
     @Column
+    private String codeSour;
+    @Column
     private String name;
     @Column
     private String url;
@@ -27,6 +29,14 @@ public class SourceEntity {
 
     public void setIdSour(int idSour) {
         this.idSour = idSour;
+    }
+
+    public String getCodeSour() {
+        return codeSour;
+    }
+
+    public void setCodeSour(String codeSour) {
+        this.codeSour = codeSour;
     }
 
     public String getName() {

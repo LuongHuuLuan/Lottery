@@ -1,9 +1,10 @@
 package com.lottery.lotteryapi.dto;
 
-public class ProvinceDTO {
+public class PrizeDTO {
     private int id;
     private String code;
     private String name;
+    private double prize;
 
     public int getId() {
         return id;
@@ -27,5 +28,13 @@ public class ProvinceDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public double getPrize() {
+        return prize;
+    }
+
+    public void setPrize(double prize) {
+        this.prize = prize;
     }
 }

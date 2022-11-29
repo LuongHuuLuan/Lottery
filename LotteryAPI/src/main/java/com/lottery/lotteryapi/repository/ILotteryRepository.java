@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface LotteryRepository extends JpaRepository<LotteryEntity, Integer> {
+public interface ILotteryRepository extends JpaRepository<LotteryEntity, Integer> {
     public List<LotteryEntity> findByProvince_IdPro(int idPro);
     public List<LotteryEntity> findByDateAndIsDelete(DateEntity date, String isDelete);
 }

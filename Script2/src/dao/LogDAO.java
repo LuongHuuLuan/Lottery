@@ -17,7 +17,7 @@ public class LogDAO {
 			Connection connect = ConnectControl.getInstance().getConnection();
 			String sql = "INSERT INTO FILE_LOG(id_config, file_name, date, state, contact) VALUES(?,?,?,?,?)";
 			PreparedStatement ps = connect.prepareStatement(sql);
-			ps.setInt(1, fileLog.getConfig().getIdConfig());
+			ps.setInt(1, fileLog.getConfig().getId());
 			ps.setString(2, fileLog.getFileName());
 			ps.setTimestamp(3, fileLog.getDate());
 			ps.setString(4, fileLog.getState());
