@@ -1,0 +1,47 @@
+#head_1{
+    overflow: hidden;
+    background-color: #13CD70;
+    padding: 20px 10px;
+}
+#head_2{
+    overflow: hidden;
+    padding: 20px 10px;
+}
+#head_3{
+    overflow: hidden;
+    font-weight: bold;
+    color: aliceblue;
+    background-color: #13CD70;
+    padding: 20px 10px;
+}
+#head_4{
+    overflow: hidden;
+    color: #13CD70;
+    font-weight: bold;
+    padding: 20px 10px;
+}
+#BoDy_Left{
+    float: left;
+    width: 65%;
+
+}
+#BoDy_Right{
+    float: left;
+    width: 30%;
+    
+}
+#Body_Right_Top{
+    border-width:2px;
+border-style:solid;
+border-color:black;
+
+}
+#Body_Right_Bot{
+    border-width:2px;
+border-style:solid;
+border-color:black;
+
+}
+.h2{
+    font-weight: bold;
+}

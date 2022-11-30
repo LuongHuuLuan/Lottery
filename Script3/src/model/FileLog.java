@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 public class FileLog {
 	private int id;
-	private int idConfig;
+	private Config config;
 	private String fileName;
 	private Timestamp date;
 	private String state;
@@ -13,9 +13,9 @@ public class FileLog {
 	public FileLog() {
 	}
 
-	public FileLog(int id, int idConfig, String fileName, Timestamp date, String state, int contact) {
+	public FileLog(int id, Config config, String fileName, Timestamp date, String state, int contact) {
 		this.id = id;
-		this.idConfig = idConfig;
+		this.config = config;
 		this.fileName = fileName;
 		this.date = date;
 		this.state = state;
@@ -30,12 +30,12 @@ public class FileLog {
 		this.id = id;
 	}
 
-	public int getIdConfig() {
-		return idConfig;
+	public Config getConfig() {
+		return config;
 	}
 
-	public void setIdConfig(int idConfig) {
-		this.idConfig = idConfig;
+	public void setConfig(Config config) {
+		this.config = config;
 	}
 
 	public String getFileName() {
@@ -69,12 +69,4 @@ public class FileLog {
 	public void setContact(int contact) {
 		this.contact = contact;
 	}
-
-	@Override
-	public String toString() {
-		return "FileLog [id=" + id + ", idConfig=" + idConfig + ", fileName=" + fileName + ", date=" + date + ", state="
-				+ state + ", contact=" + contact + "]";
-	}
-	
-
 }

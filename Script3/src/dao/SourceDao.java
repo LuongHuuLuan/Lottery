@@ -4,84 +4,177 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.sql.Statement;
 
 import connection.ConnectDW;
 import connection.ConnectStaging;
 import model.Source;
 
-public class SourceDao {
+public class SourceDAO {
 
-	// add 1 row to the table source_dim in DataWH
-	public static boolean addSourceToDaWH(String name, String url) {
+	public static int addSource(Source source, Database database) {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
-			Connection connect = ConnectDW.getInstance().getConnection();
-			String sql = "INSERT INTO source_dim(name, url) values(?,?)";
-			PreparedStatement ps = connect.prepareStatement(sql);
-			ps.setString(1, name);
-			ps.setString(2, url);
-			int status = ps.executeUpdate();
-			if (status > 0) {
-				return true;
+			int id = -1;
+
+			if (database == Database.Staging) {
+				connection = ConnectStaging.getInstance().getConnection();
+			} else {
+				connection = ConnectDW.getInstance().getConnection();
 			}
-			return false;
+
+			connection.setAutoCommit(false);
+			String sql = "INSERT INTO source_dim(code_sour, name, url) values(?,?,?)";
+			ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, source.getCodeSour());
+			ps.setString(2, source.getName());
+			ps.setString(3, source.getUrl());
+			ps.executeUpdate();
+			rs = ps.getGeneratedKeys();
+			if (rs.next()) {
+				id = rs.getInt(1);
+			}
+			connection.commit();
+			return id;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return false;
+			if (connection != null) {
+				try {
+					connection.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
 		}
+		return -1;
 	}
 
-	// get 1 row in table source_dim in DataWH
-	public static Source getSourceURLInDataWH(String url) {
+	public static Source getSource(int id, Database database) {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
-			Connection connect = ConnectDW.getInstance().getConnection();
-			String sql = "SELECT * from source_dim where url = ?";
-			PreparedStatement preparedStatement = connect.prepareStatement(sql);
-			preparedStatement.setString(1, url);
-			ResultSet resultset = preparedStatement.executeQuery();
-			while (resultset.next()) {
-				return new Source(resultset.getInt(1), resultset.getString(2), resultset.getString(3));
+			if (database == Database.Staging) {
+				connection = ConnectStaging.getInstance().getConnection();
+			} else {
+				connection = ConnectDW.getInstance().getConnection();
+			}
+
+			String sql = "SELECT id_sour, code_sour, name, url from source_dim where id_sour = ?";
+			ps = connection.prepareStatement(sql);
+			ps.setInt(1, id);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				int idSour = rs.getInt("id_sour");
+				String codeSour = rs.getString("code_sour");
+				String name = rs.getString("name");
+				String url = rs.getString("url");
+				return new Source(idSour, codeSour, name, url);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
-
-		return new Source(0, "ERR", "ERR");
-	}
-
-	// get 1 row in table source_dim of Staging
-	public static Source getSourceInStaging(int id) {
-		try {
-			Connection connect = ConnectStaging.getInstance().getConnection();
-			String sql = "SELECT * from source_dim where id_sour = ?";
-			PreparedStatement preparedStatement = connect.prepareStatement(sql);
-			preparedStatement.setInt(1, id);
-			ResultSet resultset = preparedStatement.executeQuery();
-			while (resultset.next()) {
-				return new Source(resultset.getInt(1), resultset.getString(2), resultset.getString(3));
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (SQLException e2) {
+				e2.printStackTrace();
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
-
 		return null;
 	}
 
-	// get all row in table source of DataWH
-	public static ArrayList<Source> getAllSourceInDW() {
-		ArrayList<Source> result = new ArrayList<Source>();
+	public static Source getSource(String name, String url, Database database) {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
-			Connection connect = ConnectDW.getInstance().getConnection();
-			String sql = "select * from source_dim";
-			PreparedStatement preparedStatement = connect.prepareStatement(sql);
-			ResultSet resultSet = preparedStatement.executeQuery();
-			while (resultSet.next()) {
-				result.add(new Source(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3)));
+			if (database == Database.Staging) {
+				connection = ConnectStaging.getInstance().getConnection();
+			} else {
+				connection = ConnectDW.getInstance().getConnection();
 			}
-		} catch (Exception e) {
+
+			String sql = "SELECT id_sour, code_sour, name, url from source_dim where name = ? and url = ?";
+			ps = connection.prepareStatement(sql);
+			ps.setString(1, name);
+			ps.setString(2, url);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				int idSour = rs.getInt("id_sour");
+				String codeSour = rs.getString("code_sour");
+				return new Source(idSour, codeSour, name, url);
+			}
+		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
 		}
-		return result;
+		return null;
 	}
 
+	public static Source getSource(String name, Database database) {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+
+			if (database == Database.Staging) {
+				connection = ConnectStaging.getInstance().getConnection();
+			} else {
+				connection = ConnectDW.getInstance().getConnection();
+			}
+
+			String sql = "SELECT id_sour,code_sour, name, url from source_dim where name = ?";
+			ps = connection.prepareStatement(sql);
+			ps.setString(1, name);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				int idSour = rs.getInt("id_sour");
+				String codeSour = rs.getString("code_sour");
+				String url = rs.getString("url");
+				return new Source(idSour, codeSour, name, url);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
+		}
+		return null;
+	}
 }

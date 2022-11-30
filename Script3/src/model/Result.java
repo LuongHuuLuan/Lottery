@@ -1,31 +1,50 @@
 package model;
 
 public class Result {
-	private String idLot;
-	private int idPri;
+	private int idRe;
+	private Lottery lottery;
+	private Prize prize;
 	private String result;
 
-	public Result(String idLot, int idPri, String result) {
-		super();
-		this.idLot = idLot;
-		this.idPri = idPri;
+	public Result() {
+
+	}
+
+	public Result(Lottery lottery, Prize prize, String result) {
+		this.lottery = lottery;
+		this.prize = prize;
 		this.result = result;
 	}
-
-	public String getIdLot() {
-		return idLot;
+	
+	public Result(int idRe, Lottery lottery, Prize prize, String result) {
+		this.idRe = idRe;
+		this.lottery = lottery;
+		this.prize = prize;
+		this.result = result;
+	}
+	
+	public int getIdRe() {
+		return idRe;
 	}
 
-	public void setIdLot(String idLot) {
-		this.idLot = idLot;
+	public void setIdRe(int idRe) {
+		this.idRe = idRe;
 	}
 
-	public int getIdPri() {
-		return idPri;
+	public Lottery getLottery() {
+		return lottery;
 	}
 
-	public void setIdPri(int idPri) {
-		this.idPri = idPri;
+	public void setLottery(Lottery lottery) {
+		this.lottery = lottery;
+	}
+
+	public Prize getPrize() {
+		return prize;
+	}
+
+	public void setPrize(Prize prize) {
+		this.prize = prize;
 	}
 
 	public String getResult() {

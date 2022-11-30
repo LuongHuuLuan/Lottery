@@ -18,10 +18,11 @@ public class PrizeDAO {
 			int id = -1;
 			connection = ConnectStaging.getInstance().getConnection();
 			connection.setAutoCommit(false);
-			String sql = "INSERT INTO prize_dim(name, prize) values(?,?)";
+			String sql = "INSERT INTO prize_dim(code_pri, name, prize) values(?,?,?)";
 			ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			ps.setString(1, prize.getName());
-			ps.setDouble(2, prize.getPrize());
+			ps.setString(1, prize.getCodePri());
+			ps.setString(2, prize.getName());
+			ps.setDouble(3, prize.getPrize());
 			ps.executeUpdate();
 			rs = ps.getGeneratedKeys();
 			if (rs.next()) {
@@ -64,7 +65,11 @@ public class PrizeDAO {
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				return new Prize(rs.getInt(1), rs.getString(2), rs.getDouble(3));
+				int idPri = rs.getInt("id_pri");
+				String codePri = rs.getString("code_pri");
+				String name = rs.getString("name");
+				double prize = rs.getDouble("prize");
+				return new Prize(idPri, codePri, name, prize);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -83,7 +88,7 @@ public class PrizeDAO {
 
 		return null;
 	}
-	
+
 	public static Prize getPrize(String name) {
 		Connection connection = null;
 		PreparedStatement ps = null;
@@ -95,7 +100,10 @@ public class PrizeDAO {
 			ps.setString(1, name);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				return new Prize(rs.getInt(1), rs.getString(2), rs.getDouble(3));
+				int idPri = rs.getInt("id_pri");
+				String codePri = rs.getString("code_pri");
+				double prize = rs.getDouble("prize");
+				return new Prize(idPri, codePri, name, prize);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

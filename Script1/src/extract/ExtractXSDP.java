@@ -143,7 +143,7 @@ public class ExtractXSDP {
 
 	public boolean saveCSV(String content, String dest) throws IOException {
 		if (content.length() != 0) {
-			FileWriter fw = new FileWriter(dest, true);
+			FileWriter fw = new FileWriter(dest);
 			PrintWriter pw = new PrintWriter(fw);
 			pw.write(content);
 			pw.flush();
@@ -171,7 +171,7 @@ public class ExtractXSDP {
 // 				no data
 //				get 1 row data from table file_configuration
 				Config config = ConfigDAO.getConfig(1);
-				String src = config.getSource();
+				String src = config.getSourceUrl();
 				MyDate today = new MyDate();
 				String url = src.substring(0, src.indexOf("-")) + "-" + today.toDateString() + ".html";
 				String fileName = "lottery-result_" + today.toDateString() + "_"
@@ -189,12 +189,12 @@ public class ExtractXSDP {
 //				get data from source
 //				String data = src.substring(src.indexOf("//") + 2, src.indexOf(".")) + "\n" + url + "\n"
 //						+ "Tỉnh,Ngày,Giải 8,Giải 7,Giải 6,Giải 5,Giải 4,Giải 3,Giải 2,Giải 1,Giải ĐB\n";
-				String data ="Tỉnh,Ngày,Giải 8,Giải 7,Giải 6,Giải 5,Giải 4,Giải 3,Giải 2,Giải 1,Giải ĐB\n";
+				String data = "Tỉnh,Ngày,Giải 8,Giải 7,Giải 6,Giải 5,Giải 4,Giải 3,Giải 2,Giải 1,Giải ĐB\n";
 				data += crawling(url);
 				if (data.trim().length() != 0) {
 //					has data
 //					save data format csv to ftp server and local
-					saveCSV(data, config.getSourceLocal() + "/" + fileName);
+					saveCSV(data, config.getLocalStogrePath() + "/" + fileName);
 //					get last row from table file_log has status ES and update status ER
 					LogDAO.updateStateLastRow("ES", "ER");
 				} else {
@@ -216,7 +216,7 @@ public class ExtractXSDP {
 			if (LogDAO.getLastRowExtract() == null) {
 				// has data
 				Config config = ConfigDAO.getConfig(1);
-				String src = config.getSource();
+				String src = config.getSourceUrl();
 				String url = src.substring(0, src.indexOf("-")) + "-" + date.toDateString() + ".html";
 				String fileName = "lottery-result_" + date.toDateString() + "_"
 						+ src.substring(src.indexOf("//") + 2, src.indexOf(".")) + ".csv";
@@ -236,12 +236,12 @@ public class ExtractXSDP {
 //				get data from source
 //				String data = src.substring(src.indexOf("//") + 2, src.indexOf(".")) + "\n" + url + "\n"
 //						+ "Tỉnh,Ngày,Giải 8,Giải 7,Giải 6,Giải 5,Giải 4,Giải 3,Giải 2,Giải 1,Giải ĐB\n";
-				String data ="Tỉnh,Ngày,Giải 8,Giải 7,Giải 6,Giải 5,Giải 4,Giải 3,Giải 2,Giải 1,Giải ĐB\n";
+				String data = "Tỉnh,Ngày,Giải 8,Giải 7,Giải 6,Giải 5,Giải 4,Giải 3,Giải 2,Giải 1,Giải ĐB\n";
 				data += crawling(url);
 				if (data.trim().length() != 0) {
 //					has data
 //					save data format csv to ftp server and local
-					saveCSV(data, config.getSourceLocal() + "/" + fileName);
+					saveCSV(data, config.getLocalStogrePath() + "/" + fileName);
 //					get last row from table file_log has status ES and update status ER
 					LogDAO.updateStateLastRow("ES", "ER");
 				} else {
@@ -264,15 +264,17 @@ public class ExtractXSDP {
 	}
 
 	public static void main(String[] args) {
-//		MyDate start = new MyDate(10, 9, 2022);
-//		MyDate end = new MyDate(25, 10, 2022);
+		System.out.println("Extracting...");
+		MyDate start = new MyDate(1, 11, 2022);
+		MyDate end = new MyDate(29, 11, 2022);
 //		MyDate yesterday = new MyDate(25, 10, 2022);
 		ExtractXSDP c = new ExtractXSDP();
-		MyDate today = new MyDate();
+//		MyDate today = new MyDate();
 //		c.crawlToday();
-		c.crawl(today.previousDay());
-//		c.crawl(start, end);
-
-		JOptionPane.showMessageDialog(null, "Finish");
+//		c.crawl(today.previousDay());
+		c.crawl(start, end);
+//		c.crawl(new MyDate(2, 11, 2022));
+		System.out.println("finish");
+//		JOptionPane.showMessageDialog(null, "Finish");
 	}
 }

@@ -11,13 +11,9 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
-import connection.ConnectDW;
 import connection.ConnectStaging;
 
 public class StagingDAO {
-	public static void main(String[] args) {
-		StagingDAO.deleteDateStaging();
-	}
 
 	// read all content configs file
 	public static ArrayList<String> readTruncateStaging() {
@@ -45,11 +41,17 @@ public class StagingDAO {
 		try {
 			Connection connect = ConnectStaging.getInstance().getConnection();
 			ArrayList<String> sqls = readTruncateStaging();
+			PreparedStatement preparedStatement = connect.prepareStatement("SET FOREIGN_KEY_CHECKS = 0");
+			preparedStatement.execute();
+			preparedStatement.close();
 			for (String s : sqls) {
-				String sql = s;
-				PreparedStatement preparedStatement = connect.prepareStatement(sql);
-				preparedStatement.execute();
+				preparedStatement = connect.prepareStatement(s);
+				preparedStatement.executeUpdate();
+				preparedStatement.close();
 			}
+			preparedStatement = connect.prepareStatement("SET FOREIGN_KEY_CHECKS = 1");
+			preparedStatement.execute();
+			preparedStatement.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

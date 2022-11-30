@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import dao.DateDAO;
 import dao.LogDAO;
 import dao.LotteryDAO;
@@ -23,7 +25,7 @@ import model.Province;
 import model.Result;
 import model.Source;
 
-public class LoadData {
+public class LoadDataToStaging {
 
 	public String readFile(String path) {
 		File file = new File(path);
@@ -51,15 +53,14 @@ public class LoadData {
 		}
 	}
 
-	public String loadSourDim(String source) {
-		String sourceName = source.substring(source.indexOf("https://") + 8, source.indexOf("."));
+	public void loadSourDim(String sourceCode, String sourceName, String sourceURL) {
 		if (SourceDAO.getSource(sourceName) == null) {
 			Source sour = new Source();
+			sour.setCodeSour(sourceCode);
 			sour.setName(sourceName);
-			sour.setUrl(source);
+			sour.setUrl(sourceURL);
 			SourceDAO.addSource(sour);
 		}
-		return sourceName;
 	}
 
 	public List<String> loadProvinceDim(String path) {
@@ -70,6 +71,7 @@ public class LoadData {
 			String provinceName = lines[i].split(",")[0];
 			if (ProvinceDAO.getProvince(provinceName) == null) {
 				Province province = new Province();
+				province.setCodePro(GetCode.getCode(provinceName));
 				province.setName(provinceName);
 				ProvinceDAO.addProvince(province);
 				provinces.add(provinceName);
@@ -93,6 +95,7 @@ public class LoadData {
 				int year = Integer.parseInt(splitShortDate[2]);
 				Date dateDim = new Date();
 				dateDim.setFullDate(fullDate);
+				dateDim.setShortDate(shortDate);
 				dateDim.setDay(day);
 				dateDim.setDate(date);
 				dateDim.setMonth(month);
@@ -146,6 +149,7 @@ public class LoadData {
 			String prizeName = listPrizes[i];
 			if (PrizeDAO.getPrize(prizeName) == null) {
 				double prize = getPrize(prizeName);
+				prizeDim.setCodePri(GetCode.getCode(prizeName));
 				prizeDim.setName(prizeName);
 				prizeDim.setPrize(prize);
 				PrizeDAO.addPrize(prizeDim);
@@ -161,12 +165,12 @@ public class LoadData {
 		for (int i = 1; i < lines.length; i++) {
 			String[] lineData = lines[i].split(",");
 			String provinceName = lineData[0];
+			Source source = SourceDAO.getSource(sourceName);
+			Province province = ProvinceDAO.getProvince(provinceName);
+			Date date = DateDAO.getDate(fullDate);
 			String shortDate = fullDate.substring(fullDate.lastIndexOf(" ") + 1, fullDate.length());
-			String idLot = sourceName + "_" + shortDate.replaceAll("/", "-") + "_" + provinceName;
+			String idLot = source.getCodeSour() + "_" + shortDate.replaceAll("/", "-") + "_" + province.getCodePro();
 			if (LotteryDAO.getLottery(idLot) == null) {
-				Province province = ProvinceDAO.getProvince(provinceName);
-				Source source = SourceDAO.getSource(sourceName);
-				Date date = DateDAO.getDate(fullDate);
 				Lottery lottery = new Lottery(idLot, date, source, province);
 				LotteryDAO.addLottery(lottery);
 				for (int j = 2; j < lineData.length; j++) {
@@ -183,7 +187,6 @@ public class LoadData {
 	}
 
 	public void loadData() {
-		System.out.println("Load");
 		// connect db control
 //		get all row data has date = today and status = ER  from table file_log
 		List<FileLog> logs = LogDAO.getAllExtract();
@@ -194,13 +197,13 @@ public class LoadData {
 			for (FileLog log : logs) {
 				Config config = log.getConfig();
 //				get file csv has file name = file_name from ftp server or local
-				String localFilePath = config.getSourceLocal() + "\\" + log.getFileName();
+				String localFilePath = config.getLocalStogrePath() + "\\" + log.getFileName();
 //				save data from csv file to database staging
-				String sourceName = loadSourDim(config.getSource());
+				loadSourDim(config.getSourceCode(), config.getSourceName(), config.getSourceUrl());
 				loadProvinceDim(localFilePath);
 				String fullDate = loadDateDim(localFilePath);
 				loadPrize(localFilePath);
-				loadLottery(localFilePath, sourceName, fullDate);
+				loadLottery(localFilePath, config.getSourceName(), fullDate);
 //				get last row from table file_log has status ER and update status SR
 				LogDAO.setLogState(log.getId(), "SR");
 			}
@@ -208,8 +211,10 @@ public class LoadData {
 	}
 
 	public static void main(String[] args) {
-		LoadData load = new LoadData();
+		System.out.println("Loading...");
+		LoadDataToStaging load = new LoadDataToStaging();
 		load.loadData();
 		System.out.println("finish");
+//		JOptionPane.showMessageDialog(null, "Finish");
 	}
 }

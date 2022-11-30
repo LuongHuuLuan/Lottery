@@ -5,71 +5,130 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 
 import connection.ConnectDW;
 import connection.ConnectStaging;
 import model.Province;
 
 public class ProvinceDAO {
-	public static void main(String[] args) {
-		ProvinceDAO dao = new ProvinceDAO();
-//		ProvinceDAO.getAllProvinceInDW();
-//		ProvinceDAO.getProvinceInStaging(3);
-//		ProvinceDAO.addProvinceToDaWH(3, "Alo");
-	}
-
-	// get all row in table province of DataWH
-	public static ArrayList<Province> getAllProvinceInDW() {
-		ArrayList<Province> result = new ArrayList<Province>();
+	public static int addProvince(Province province, Database database) {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
-			Connection connect = ConnectDW.getInstance().getConnection();
-			String sql = "select * from province_dim";
-			PreparedStatement preparedStatement = connect.prepareStatement(sql);
-			ResultSet resultSet = preparedStatement.executeQuery();
-			while (resultSet.next()) {
-				result.add(new Province(resultSet.getInt(1), resultSet.getString(2)));
+			int id = -1;
+			if (database == Database.Staging) {
+				connection = ConnectStaging.getInstance().getConnection();
+			} else {
+				connection = ConnectDW.getInstance().getConnection();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-
-	// add 1 row to the table province in DataWH
-	public static boolean addProvinceToDaWH(String name) {
-		try {
-			Connection connect = ConnectDW.getInstance().getConnection();
-			String sql = "INSERT INTO province_dim(name) values(?)";
-			PreparedStatement ps = connect.prepareStatement(sql);
-			ps.setString(1, name);
-			int status = ps.executeUpdate();
-			if (status > 0) {
-				return true;
+			connection.setAutoCommit(false);
+			String sql = "INSERT INTO province_dim(code_pro, name) values(?,?)";
+			ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, province.getCodePro());
+			ps.setString(2, province.getName());
+			ps.executeUpdate();
+			rs = ps.getGeneratedKeys();
+			if (rs.next()) {
+				id = rs.getInt(1);
 			}
-			return false;
+			connection.commit();
+			return id;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return false;
+			if (connection != null) {
+				try {
+					connection.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
 		}
+		return -1;
 	}
 
-	// get 1 row in table province of Staging
-	public static Province getProvinceInStaging(int id) {
+	public static Province getProvince(int id, Database database) {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
-			Connection connect = ConnectStaging.getInstance().getConnection();
-			String sql = "SELECT id_pro, name from province_dim where id_pro = ?";
-			PreparedStatement preparedStatement = connect.prepareStatement(sql);
-			preparedStatement.setInt(1, id);
-			ResultSet resultset = preparedStatement.executeQuery();
-			while (resultset.next()) {
-				return new Province(resultset.getInt(1), resultset.getString(2));
+			if (database == Database.Staging) {
+				connection = ConnectStaging.getInstance().getConnection();
+			} else {
+				connection = ConnectDW.getInstance().getConnection();
+			}
+			String sql = "SELECT id_pro, code_pro, name from province_dim where id_pro = ?";
+			ps = connection.prepareStatement(sql);
+			ps.setInt(1, id);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				String codePro = rs.getString("code_pro");
+				String name = rs.getString("name");
+				return new Province(id, codePro, name);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
 		}
 
 		return null;
 	}
 
+	public static Province getProvince(String name, Database database) {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			if (database == Database.Staging) {
+				connection = ConnectStaging.getInstance().getConnection();
+			} else {
+				connection = ConnectDW.getInstance().getConnection();
+			}
+			String sql = "SELECT id_pro, code_pro, name from province_dim where name = ?";
+			ps = connection.prepareStatement(sql);
+			ps.setString(1, name);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				int idPro = rs.getInt("id_pro");
+				String codePro = rs.getString("code_pro");
+				return new Province(idPro, codePro, name);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
+		}
+
+		return null;
+	}
 }

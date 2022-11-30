@@ -4,91 +4,147 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.sql.Statement;
 
 import connection.ConnectDW;
 import connection.ConnectStaging;
-import model.DateLottery;
+import model.Date;
 
 public class DateDAO {
-	// add 1 row to the table date_dim in DataWH
-	public static boolean addDateToDaWH(String fullDate, String day, int date, int month, int year) {
+	public static int addDate(Date date, Database database) {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
-			Connection connect = ConnectDW.getInstance().getConnection();
-			String sql = "INSERT INTO date_dim(full_date, day, date, month, year) values(?,?,?,?,?)";
-			PreparedStatement ps = connect.prepareStatement(sql);
-			ps.setString(1, fullDate);
-			ps.setString(2, day);
-			ps.setInt(3, date);
-			ps.setInt(4, month);
-			ps.setInt(5, year);
-			int status = ps.executeUpdate();
-			if (status > 0) {
-				return true;
+			int id = -1;
+
+			if (database == Database.Staging) {
+				connection = ConnectStaging.getInstance().getConnection();
+			} else {
+				connection = ConnectDW.getInstance().getConnection();
 			}
-			return false;
+
+			connection.setAutoCommit(false);
+			String sql = "INSERT INTO date_dim(full_date, short_date, day, date, month, year) values(?,?,?,?,?,?)";
+			ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, date.getFullDate());
+			ps.setString(2, date.getShortDate());
+			ps.setString(3, date.getDay());
+			ps.setInt(4, date.getDate());
+			ps.setInt(5, date.getMonth());
+			ps.setInt(6, date.getYear());
+			ps.executeUpdate();
+			rs = ps.getGeneratedKeys();
+			if (rs.next()) {
+				id = rs.getInt(1);
+			}
+			connection.commit();
+			return id;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return false;
+			if (connection != null) {
+				try {
+					connection.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
 		}
+		return -1;
 	}
 
-	// get 1 row in table datesource_dim of Staging
-	public static DateLottery getDateInStaging(int id) {
+	public static Date getDate(int id, Database database) {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
-			Connection connect = ConnectStaging.getInstance().getConnection();
+
+			if (database == Database.Staging) {
+				connection = ConnectStaging.getInstance().getConnection();
+			} else {
+				connection = ConnectDW.getInstance().getConnection();
+			}
+
 			String sql = "SELECT * from date_dim where id_date = ?";
-			PreparedStatement preparedStatement = connect.prepareStatement(sql);
-			preparedStatement.setInt(1, id);
-			ResultSet resultset = preparedStatement.executeQuery();
-			while (resultset.next()) {
-				return new DateLottery(resultset.getInt(1), resultset.getString(2), resultset.getString(3),
-						resultset.getInt(4), resultset.getInt(5), resultset.getInt(6));
+			ps = connection.prepareStatement(sql);
+			ps.setInt(1, id);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				int idDate = rs.getInt("id_date");
+				String fullDate = rs.getString("full_date");
+				String shortDate = rs.getString("short_date");
+				String day = rs.getString("day");
+				int date = rs.getInt("date");
+				int month = rs.getInt("month");
+				int year = rs.getInt("year");
+				return new Date(idDate, fullDate, shortDate, day, date, month, year);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
 		}
 
 		return null;
 	}
 
-	// get 1 row in table datesource_dim of DataWH
-	public static DateLottery getDateInDataWH(int date, int month, int year) {
+	public static Date getDate(String fullDate, Database database) {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
-			Connection connect = ConnectDW.getInstance().getConnection();
-			String sql = "SELECT * from date_dim where date = ? and month = ? and year = ?";
-			PreparedStatement preparedStatement = connect.prepareStatement(sql);
-			preparedStatement.setInt(1, date);
-			preparedStatement.setInt(2, month);
-			preparedStatement.setInt(3, year);
-			ResultSet resultset = preparedStatement.executeQuery();
-			while (resultset.next()) {
-				return new DateLottery(resultset.getInt(1), resultset.getString(2), resultset.getString(3),
-						resultset.getInt(4), resultset.getInt(5), resultset.getInt(6));
+			if (database == Database.Staging) {
+				connection = ConnectStaging.getInstance().getConnection();
+			} else {
+				connection = ConnectDW.getInstance().getConnection();
+			}
+			String sql = "SELECT * from date_dim where full_date = ?";
+			ps = connection.prepareStatement(sql);
+			ps.setString(1, fullDate);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				int idDate = rs.getInt("id_date");
+				String shortDate = rs.getString("short_date");
+				String day = rs.getString("day");
+				int date = rs.getInt("date");
+				int month = rs.getInt("month");
+				int year = rs.getInt("year");
+				return new Date(idDate, fullDate, shortDate, day, date, month, year);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
-
-		return new DateLottery(0, "", "", 0, 0, 0);
-	}
-
-	// get all row in table date_dim of DataWH
-	public static ArrayList<DateLottery> getAllSourceInDW() {
-		ArrayList<DateLottery> result = new ArrayList<DateLottery>();
-		try {
-			Connection connect = ConnectDW.getInstance().getConnection();
-			String sql = "select * from date_dim";
-			PreparedStatement preparedStatement = connect.prepareStatement(sql);
-			ResultSet resultSet = preparedStatement.executeQuery();
-			while (resultSet.next()) {
-				result.add(new DateLottery(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),
-						resultSet.getInt(4), resultSet.getInt(5), resultSet.getInt(6)));
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (SQLException e2) {
+				e2.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
-		return result;
+		return null;
 	}
-
 }
