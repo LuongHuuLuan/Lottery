@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lottery</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/styleTable.css">
+</head>
+<body>
+    <div id="main">
+        <div id="header" class="background_h_f">
+            <div class="title_lottery">
+                <h1 class="title_text text_white">KẾT QUẢ XỔ SỐ</h1>
+                <span class="link_page text_white">xosonhanh.com</span>
+            </div>
+            <div class="header_nav">
+                <ul class="nav_content">
+                     <li><a onclick="loading()" href="#main">Trang chủ</a></li>
+                     <li>
+                        <a href="#">XSMN</a>
+                        <ul class="subnav">
+                            <li><a onclick="searchDay(1)" href="#">Thứ 2</a></li>
+                            <li><a onclick="searchDay(2)" href="#">Thứ 3</a></li>
+                            <li><a onclick="searchDay(3)" href="#">Thứ 4</a></li>
+                            <li><a onclick="searchDay(4)" href="#">Thứ 5</a></li>
+                            <li><a onclick="searchDay(5)" href="#">Thứ 6</a></li>
+                            <li><a onclick="searchDay(6)" href="#">Thứ 7</a></li>
+                            <li><a onclick="searchDay(0)" href="#">Chủ nhật</a></li>
+                        </ul>       
+                     </li>
+                     <li>
+                        <a href="#">XSMB</a>
+                        <ul class="subnav">
+                            <li><a onclick="clickNull()" href="#">Thứ 2</a></li>
+                            <li><a onclick="clickNull()" href="#">Thứ 3</a></li>
+                            <li><a onclick="clickNull()" href="#">Thứ 4</a></li>
+                            <li><a onclick="clickNull()" href="#">Thứ 5</a></li>
+                            <li><a onclick="clickNull()" href="#">Thứ 6</a></li>
+                            <li><a onclick="clickNull()" href="#">Thứ 7</a></li>
+                            <li><a onclick="clickNull()" href="#">Chủ nhật</a></li>
+                        </ul></li>
+                     <li>
+                        <a href="#">XSMT</a>
+                        <ul class="subnav">
+                            <li><a onclick="clickNull()" href="#">Thứ 2</a></li>
+                            <li><a onclick="clickNull()" href="#">Thứ 3</a></li>
+                            <li><a onclick="clickNull()" href="#">Thứ 4</a></li>
+                            <li><a onclick="clickNull()" href="#">Thứ 5</a></li>
+                            <li><a onclick="clickNull()" href="#">Thứ 6</a></li>
+                            <li><a onclick="clickNull()" href="#">Thứ 7</a></li>
+                            <li><a onclick="clickNull()" href="#">Chủ nhật</a></li>
+                        </ul></li>
+                     <li><a onclick="clickNull()" href="#">Thống kê</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="container">
+            <div class="container_nav">
+                <ul class="nav_content">
+                    <li><a href="#">XSMN</a></li>
+                    <li><a onclick="searchDay(1)" href="#">Thứ 2</a></li>
+                    <li><a onclick="searchDay(2)" href="#">Thứ 3</a></li>
+                    <li><a onclick="searchDay(3)" href="#">Thứ 4</a></li>
+                    <li><a onclick="searchDay(4)" href="#">Thứ 5</a></li>
+                    <li><a onclick="searchDay(5)" href="#">Thứ 6</a></li>
+                    <li><a onclick="searchDay(6)" href="#">Thứ 7</a></li>
+                    <li><a onclick="searchDay(0)" href="#">Chủ nhật</a></li>
+                </ul>   
+            </div>
+            <div class="content">
+
+                <div class="table-lottery">
+                    <table>
+                        <thead class="title_table"></thead>
+                        <thead>
+                            <tr class="list_province"></tr>
+                        </thead>
+                        <tbody>
+                            <tr class="list_result_8"></tr>
+                            <tr class="list_result_7"></tr>
+                            <tr class="list_result_6"></tr>
+                            <tr class="list_result_5"></tr>
+                            <tr class="list_result_4"></tr>
+                            <tr class="list_result_3"></tr>
+                            <tr class="list_result_2"></tr> 
+                            <tr class="list_result_1"></tr>
+                            <tr class="list_result_DB"></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="search_lottery">
+                    <div class="form_search province">
+                        <div class="title_sub"><h2>KẾT QUẢ THEO TỈNH</h2></div>
+                        <a onclick="searchProvince('an-giang')" href="#">Kết quả xổ số An Giang >>></a>
+                        <a onclick="searchProvince('bac-lieu')" href="#">Kết quả xổ số Bạc Liêu >>></a>
+                        <a onclick="searchProvince('ben-tre')" href="#">Kết quả xổ số Bến Tre >>></a>
+                        <a onclick="searchProvince('binh-duong')" href="#">Kết quả xổ số Bình Dương>>></a>
+                        <a onclick="searchProvince('binh-phuoc')" href="#">Kết quả xổ số Bình Phước >>></a>
+                        <a onclick="searchProvince('binh-thuan')" href="#">Kết quả xổ số Bình Thuận >>></a>
+                        <a onclick="searchProvince('ca-mau')" href="#">Kết quả xổ số Cà Mau >>></a>
+                        <a onclick="searchProvince('can-tho')" href="#">Kết quả xổ số Cần Thơ >>></a>
+                        <a onclick="searchProvince('da-lat')" href="#">Kết quả xổ số Đà Lạt >>></a>
+                        <a onclick="searchProvince('dong-nai')" href="#">Kết quả xổ số Đồng Nai >>></a>
+                        <a onclick="searchProvince('dong-thap')" href="#">Kết quả xổ số Đồng Tháp >>></a>
+                        <a onclick="searchProvince('hau-giang')" href="#">Kết quả xổ số Hậu Giang >>></a>
+                        <a onclick="searchProvince('kien-giang')" href="#">Kết quả xổ số Kiên Giang >>></a>
+                        <a onclick="searchProvince('long-an')" href="#">Kết quả xổ số Long An >>></a>
+                        <a onclick="searchProvince('soc-trang')" href="#">Kết quả xổ số Sóc Trăng >>></a>
+                        <a onclick="searchProvince('tay-ninh')" href="#">Kết quả xổ số Tây Ninh >>></a>
+                        <a onclick="searchProvince('tien-giang')" href="#">Kết quả xổ số Tiền Giang >>></a>
+                        <a onclick="searchProvince('tphcm')" href="#">Kết quả xổ số TP.HCM >>></a>
+                        <a onclick="searchProvince('tra-vinh')" href="#">Kết quả xổ số Trà Vinh >>></a>
+                        <a onclick="searchProvince('vinh-long')" href="#">Kết quả xổ số Vĩnh Long >>></a>
+                        <a onclick="searchProvince('vung-tau')" href="#">Kết quả xổ số Vũng Tàu >>></a>
+                    </div>
+    
+                    <div class="form_search search">
+                        <div class="title_sub"><h2>TRA CỨU KẾT QUẢ</h2></div>
+                        <div class="select-sub">
+                            <select class="forms" name="province" onchange="changedProvince(this)">
+                                <option value="">--Chọn Tỉnh--</option>
+                                <option value="an-giang">An Giang</option>
+                                <option value="bac-lieu">Bạc Liêu</option>
+                                <option value="ben-tre">Bến Tre</option>
+                                <option value="binh-duong">Bình Dương</option>
+                                <option value="binh-phuoc">Bình Phước</option>
+                                <option value="binh-thuan">Bình Thuận</option>
+                                <option value="ca-mau">Cà Mau</option>
+                                <option value="can-tho">Cần Thơ </option>
+                                <option value="dong-nai">Đồng Nai</option>
+                                <option value="dong-thap">Đồng Tháp</option>
+                                <option value="hau-giang">Hậu Giang</option>
+                                <option value="kien-giang">Kiên Giang</option>
+                                <option value="soc-trang">Sóc Trăng</option>
+                                <option value="tay-ninh">Tây Ninh</option>
+                                <option value="tien-giang">Tiền Giang</option>
+                                <option value="tphcm">TP.HCM </option>
+                                <option value="tra-vinh">Trà Vinh </option>
+                                <option value="vinh-long">Vĩnh Long </option>
+                                <option value="vung-tau">Vũng Tàu </option>
+                                <option value="long-an">Long An</option>
+                                <option value="da-lat">Đà Lạt</option>
+                            </select>
+                            <select class="forms" name="day" onchange="changedDay(this)">
+                                <option value="">--Chọn Thứ--</option>
+                                <option value="1">Thứ 2</option>
+                                <option value="2">Thứ 3</option>
+                                <option value="3">Thứ 4</option>
+                                <option value="4">Thứ 5</option>
+                                <option value="5">Thứ 6</option>
+                                <option value="6">Thứ 7</option>
+                                <option value="0">Chủ nhật</option>
+                            </select>
+                        </div>
+                        <div class="select-sub">
+                            <p id="demo"></p>  
+                            <input class="forms" type="date" min="1970-01-01" id="input_date"/>
+                        </div>
+                        <div class="select-sub">
+                            <button class="button_search" onclick="search()">Kết quả</button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div> 
+            <div class="cont_end">
+                <div class="item_cont_end">
+                    <h2>Kết quả xổ số</h2>
+                    <a href="">Miền Trung</a>
+                    <a href="">Miền Bắc</a>
+                    <a href="">Miền Nam</a>
+                </div>
+                <div class="item_cont_end">
+                    <h2>Thống kê xổ số</h2>
+                    <a href="">Miền Trung</a>
+                    <a href="">Miền Bắc</a>
+                    <a href="">Miền Nam</a>
+                </div>
+            </div>
+        </div>
+        <div id="footer" class="background_h_f">
+            <div class="item_footer">
+                <h2>Kết quả xổ số</h2>
+                <a href="">Miền Trung</a>
+                <a href="">Miền Bắc</a>
+                <a href="">Miền Nam</a>
+            </div>
+            <div class="item_footer">
+                <h2>Thống kê xổ số</h2>
+                <a href="">Miền Trung</a>
+                <a href="">Miền Bắc</a>
+                <a href="">Miền Nam</a>
+            </div>
+            <div class="item_footer">
+                <h2>Giới thiệu</h2>
+                <span>Xổ số nhanh - Mang đến  cho bạn những kết quả xổ số mới nhất- chính xác nhất</span>
+            </div>
+            <div class="item_footer">
+                <h2>Liên hệ nhanh</h2>
+                <span>Liên hệ với chúng tôi:
+                    Xosonhanh@gmail.com</span>
+            </div>
+        </div>
+    </div>
+    <div id="preloader" class="loading">
+        <div id="loader"></div>
+      </div>
+      <div id="particleCanvas-Blue"></div>
+      <div id="particleCanvas-White"></div>
+    <script src="./assets/js/main.js"></script>
+    <script src="./assets/js/eventButton.js"></script>
+</body>
+</html>
