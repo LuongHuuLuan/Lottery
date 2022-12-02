@@ -1,0 +1,64 @@
+/* Reset CSS */
+* {
+    padding:0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-family: Helvetica, Arial, sans-serif;
+}
+/* Commod */
+.col {
+    float: left;
+}
+.col-3 {
+    width: 33.33333%;
+}
+.col-4 {
+    width: 25%;
+}
+
+.item-province {
+    background-color: blue;
+}
+
+th,td {
+    text-align: center;
+}
+table, th, td{
+    border:1px solid #868585;
+}
+table{
+    border-collapse:collapse; 
+    margin: 20px 0;
+}
+table tr:nth-child(odd){
+    background-color:#eee;
+}
+table tr:nth-child(even){
+    background-color:white;
+}
+table thead tr:nth-child(1){
+    /* background-color:#f40819; */
+    background: url('/assets/img/background-form.png') top center / cover no-repeat;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+.font-red {
+    color: #f40819 !important;
+    font-weight: 800 !important;
+}
+.result-lottery {
+    padding:4px 32px 4px 32px;
+    display: block;
+    font-size: 24px;
+}
+.table-lottery{
+    display: grid;
+    justify-content: center;
+}
+.table-lottery .title_table{
+    background-color:#c00;
+    color: #fff;
+}
