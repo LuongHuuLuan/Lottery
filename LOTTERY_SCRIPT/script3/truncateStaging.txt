@@ -1,0 +1,6 @@
+truncate table result;
+truncate table lottery;
+truncate table date_dim;
+truncate table prize_dim;
+truncate table province_dim;
+truncate table source_dim;
