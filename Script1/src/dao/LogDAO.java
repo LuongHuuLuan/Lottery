@@ -35,7 +35,7 @@ public class LogDAO {
 		FileLog log = null;
 		try {
 			Connection connect = Connect.getInstance().getConnection();
-			String sql = "SELECT id, id_config, file_name, date, state, contact FROM file_log WHERE day(date) = day(now()) and month(date) = month(now()) and year(date) = year(now()) and (state = 'ES' or state = 'ER')";
+			String sql = "SELECT id, id_config, file_name, date, state, contact FROM file_log WHERE day(date) = day(now()) and month(date) = month(now()) and year(date) = year(now()) and (state = 'ES' or state = 'ER' or state = 'TR')";
 			PreparedStatement ps = connect.prepareStatement(sql);
 			ResultSet resultSet = ps.executeQuery();
 			while (resultSet.next()) {
