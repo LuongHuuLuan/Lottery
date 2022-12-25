@@ -1,8 +1,10 @@
 package extract;
 
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -143,12 +145,15 @@ public class ExtractXSDP {
 
 	public boolean saveCSV(String content, String dest) throws IOException {
 		if (content.length() != 0) {
-			FileWriter fw = new FileWriter(dest);
-			PrintWriter pw = new PrintWriter(fw);
-			pw.write(content);
-			pw.flush();
-			pw.close();
-			return true;
+			try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(dest),
+					StandardCharsets.UTF_8)) {
+				// do stuff
+				PrintWriter pw = new PrintWriter(writer);
+				pw.write(content);
+				pw.flush();
+				pw.close();
+				return true;
+			}
 		}
 		return false;
 	}
@@ -163,7 +168,7 @@ public class ExtractXSDP {
 		return result;
 	}
 
-	public void crawlToday() {
+	public int crawlToday() {
 		try {
 //			connect db control
 //			get 1 row data has date = today and status = ER or ES  from table file_log
@@ -197,18 +202,21 @@ public class ExtractXSDP {
 					saveCSV(data, config.getLocalStogrePath() + "/" + fileName);
 //					get last row from table file_log has status ES and update status ER
 					LogDAO.updateStateLastRow("ES", "ER");
+					return 0;
 				} else {
 //					no data
 					LogDAO.updateStateLastRow("ES", "EF");
+					return 1;
 				}
 			}
+			return 1;
 			// no data: end
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			return -1;
 		}
 	}
 
-	public void crawl(MyDate date) {
+	public int crawl(MyDate date) {
 		try {
 //			connect db control
 //			get 1 row data has date = today and status = ER or ES  from table file_log
@@ -244,14 +252,18 @@ public class ExtractXSDP {
 					saveCSV(data, config.getLocalStogrePath() + "/" + fileName);
 //					get last row from table file_log has status ES and update status ER
 					LogDAO.updateStateLastRow("ES", "ER");
+					return 0;
 				} else {
 //					no data
 					LogDAO.updateStateLastRow("ES", "EF");
+					return 1;
 				}
 			}
 			// no data: end
+			return 1;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return -1;
 		}
 
 	}
@@ -266,7 +278,7 @@ public class ExtractXSDP {
 	public static void main(String[] args) {
 		System.out.println("Extracting...");
 		MyDate start = new MyDate(1, 11, 2022);
-		MyDate end = new MyDate(29, 11, 2022);
+		MyDate end = new MyDate(24, 12, 2022);
 //		MyDate yesterday = new MyDate(25, 10, 2022);
 		ExtractXSDP c = new ExtractXSDP();
 //		MyDate today = new MyDate();
@@ -275,6 +287,6 @@ public class ExtractXSDP {
 		c.crawl(start, end);
 //		c.crawl(new MyDate(2, 11, 2022));
 		System.out.println("finish");
-//		JOptionPane.showMessageDialog(null, "Finish");
+		JOptionPane.showMessageDialog(null, "Finish");
 	}
 }

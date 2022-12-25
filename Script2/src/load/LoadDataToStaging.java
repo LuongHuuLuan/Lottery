@@ -2,8 +2,11 @@ package load;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +35,9 @@ public class LoadDataToStaging {
 		String result = "";
 		if (file.exists()) {
 			try {
-				BufferedReader bufferedReader = new BufferedReader(new FileReader(path));
+				FileInputStream fis = new FileInputStream(file);
+				InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+				BufferedReader bufferedReader = new BufferedReader(isr);
 				String line = bufferedReader.readLine();
 				while (line != null) {
 					result += line + "\n";
@@ -186,27 +191,33 @@ public class LoadDataToStaging {
 		}
 	}
 
-	public void loadData() {
+	public int loadData() {
 		// connect db control
 //		get all row data has date = today and status = ER  from table file_log
-		List<FileLog> logs = LogDAO.getAllExtract();
-//		has row
-		if (logs.size() != 0) {
-			// connect db staging
-//			get file_name in row data has date = today and status = ER  from table file_log
-			for (FileLog log : logs) {
-				Config config = log.getConfig();
-//				get file csv has file name = file_name from ftp server or local
-				String localFilePath = config.getLocalStogrePath() + "\\" + log.getFileName();
-//				save data from csv file to database staging
-				loadSourDim(config.getSourceCode(), config.getSourceName(), config.getSourceUrl());
-				loadProvinceDim(localFilePath);
-				String fullDate = loadDateDim(localFilePath);
-				loadPrize(localFilePath);
-				loadLottery(localFilePath, config.getSourceName(), fullDate);
-//				get last row from table file_log has status ER and update status SR
-				LogDAO.setLogState(log.getId(), "SR");
+		try {
+			List<FileLog> logs = LogDAO.getAllExtract();
+//			has row
+			if (logs.size() != 0) {
+				// connect db staging
+//				get file_name in row data has date = today and status = ER  from table file_log
+				for (FileLog log : logs) {
+					Config config = log.getConfig();
+//					get file csv has file name = file_name from ftp server or local
+					String localFilePath = config.getLocalStogrePath() + "\\" + log.getFileName();
+//					save data from csv file to database staging
+					loadSourDim(config.getSourceCode(), config.getSourceName(), config.getSourceUrl());
+					loadProvinceDim(localFilePath);
+					String fullDate = loadDateDim(localFilePath);
+					loadPrize(localFilePath);
+					loadLottery(localFilePath, config.getSourceName(), fullDate);
+//					get last row from table file_log has status ER and update status SR
+					LogDAO.setLogState(log.getId(), "SR");
+				}
+				return 0;
 			}
+			return 1;
+		} catch (Exception e) {
+			return -1;
 		}
 	}
 
@@ -215,6 +226,6 @@ public class LoadDataToStaging {
 		LoadDataToStaging load = new LoadDataToStaging();
 		load.loadData();
 		System.out.println("finish");
-//		JOptionPane.showMessageDialog(null, "Finish");
+		JOptionPane.showMessageDialog(null, "Finish");
 	}
 }

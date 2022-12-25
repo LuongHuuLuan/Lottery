@@ -15,7 +15,7 @@ public class GetConfig {
 	public static String readConfigsFile() {
 		String fileContent = "";
 		String currentPath = Paths.get("").toAbsolutePath().toString();
-		File configFile = new File(currentPath + "\\configs.txt");
+		File configFile = new File(currentPath + "\\script_1_configs.txt");
 
 		if (configFile.exists()) {
 			try {
