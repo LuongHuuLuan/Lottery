@@ -121,22 +121,30 @@ public class LoadDataToDw {
 		}
 	}
 
-	public void loadDataToDw() {
-		List<FileLog> logs = LogDAO.getAllStaging();
-		if (logs.size() != 0) {
-			List<Lottery> lotteries = LotteryDAO.getAllLotteriesFromStaging();
-			loadPrize();
-			for (Lottery lottery : lotteries) {
-				int idSour = loadSourDim(lottery);
-				int idPro = loadProvinceDim(lottery);
-				int idDate = loadDateDim(lottery);
-				loadLottery(lottery, idSour, idPro, idDate);
+	public int loadDataToDw() {
+		try {
+			List<FileLog> logs = LogDAO.getAllStaging();
+			if (logs.size() != 0) {
+				List<Lottery> lotteries = LotteryDAO.getAllLotteriesFromStaging();
+				loadPrize();
+				for (Lottery lottery : lotteries) {
+					int idSour = loadSourDim(lottery);
+					int idPro = loadProvinceDim(lottery);
+					int idDate = loadDateDim(lottery);
+					loadLottery(lottery, idSour, idPro, idDate);
+				}
 			}
+			for (FileLog log : logs) {
+				LogDAO.setLogState(log.getId(), "TR");
+			}
+			StagingDAO.deleteDateStaging();
+			if (logs.size() == 0) {
+				return 1;
+			} else
+				return 0;
+		} catch (Exception e) {
+			return -1;
 		}
-		for (FileLog log : logs) {
-			LogDAO.setLogState(log.getId(), "TR");
-		}
-		StagingDAO.deleteDateStaging();
 	}
 
 	public static void main(String[] args) {
@@ -144,6 +152,6 @@ public class LoadDataToDw {
 		LoadDataToDw load = new LoadDataToDw();
 		load.loadDataToDw();
 		System.out.println("finish");
-//		JOptionPane.showMessageDialog(null, "Finish");
+		JOptionPane.showMessageDialog(null, "Finish");
 	}
 }
